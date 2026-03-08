@@ -543,6 +543,70 @@
             0% { background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%); }
             100% { background: linear-gradient(180deg, #1a1a2e 0%, #2d3436 50%, #1a1a2e 100%); }
         }
+
+        /* 非常淡的心形 */
+        .faint-heart {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1.5em;
+            color: rgba(255,255,255,0.03);
+            z-index: 15;
+            user-select: none;
+        }
+
+        /* 画卷展开效果 */
+        .scroll-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease;
+            z-index: 1;
+        }
+
+        .scroll-container.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 画卷内容从中间向两边展开 */
+        .scroll-content {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 100%;
+            overflow: hidden;
+            transition: width 2s ease-out;
+        }
+
+        .scroll-container.active .scroll-content {
+            width: 100%;
+        }
+
+        .scroll-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease 1s;
+        }
+
+        .scroll-container.active .scroll-page {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -681,6 +745,7 @@
                 总有清辉相照
             </p>
         </div>
+        <div class="faint-heart">❤️</div>
     </div>
 
     <!-- 页面指示器 -->
@@ -712,8 +777,15 @@
 
     <script>
         let currentPage = 1;
+        let scrollTimeout = null;
 
         function goToPage(pageNum) {
+            // 清除自动滚动的定时器
+            if (scrollTimeout) {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = null;
+            }
+            
             document.getElementById('page' + currentPage).classList.remove('active');
             document.getElementById('page' + pageNum).classList.add('active');
             document.querySelectorAll('.dot')[currentPage - 1].classList.remove('active');
@@ -729,12 +801,28 @@
             }
             if (pageNum === 7) {
                 startFirefly();
+                // 从第7页开始播放音乐
+                if (!musicPlaying) {
+                    bgMusic.play().then(() => {
+                        musicPlaying = true;
+                        musicBtn.classList.add('playing');
+                    }).catch(() => {});
+                }
             }
             if (pageNum === 8) {
                 createSparkles();
             }
             if (pageNum === 9) {
                 createFinalSparkles();
+            }
+            
+            // 第10-12页自动滚动到下一页
+            if (pageNum === 10) {
+                scrollTimeout = setTimeout(() => goToPage(11), 5000);
+            } else if (pageNum === 11) {
+                scrollTimeout = setTimeout(() => goToPage(12), 6000);
+            } else if (pageNum === 12) {
+                scrollTimeout = setTimeout(() => goToPage(13), 7000);
             }
         }
 
@@ -1136,16 +1224,6 @@
             }
             musicPlaying = !musicPlaying;
         }
-
-        document.addEventListener('click', function initMusic() {
-            if (!musicPlaying) {
-                bgMusic.play().then(() => {
-                    musicPlaying = true;
-                    musicBtn.classList.add('playing');
-                }).catch(() => {});
-            }
-            document.removeEventListener('click', initMusic);
-        }, { once: true });
 
         // ========== 萤火虫效果 ==========
         let fireflyInterval = null;
