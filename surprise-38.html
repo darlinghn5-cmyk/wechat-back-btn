@@ -36,6 +36,16 @@
       pointer-events: none;
     }
 
+    #rain-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+
     .glow {
       position: fixed;
       border-radius: 50%;
@@ -198,8 +208,47 @@
 
     .final-words { font-size: 16px; line-height: 2.2; color: #ffc8b4; padding: 15px 0; }
 
-    .btn-container { margin-top: 30px; opacity: 0; transition: opacity 0.5s; display: flex; gap: 15px; justify-content: center; align-items: center; }
+    .btn-container { 
+      margin-top: 30px; 
+      opacity: 0; 
+      transition: opacity 0.5s; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 20px; 
+      align-items: center; 
+    }
+    
     .btn-container.show { opacity: 1; }
+    
+    .theme-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .theme-btn {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,200,180,0.3);
+      color: rgba(255,200,180,0.7);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Noto Serif SC', serif;
+      letter-spacing: 1px;
+      border-radius: 20px;
+    }
+
+    .theme-btn:hover, .theme-btn.active {
+      background: rgba(255,200,180,0.2);
+      border-color: rgba(255,200,180,0.5);
+      transform: scale(1.05);
+    }
+
+    .theme-btn.active {
+      box-shadow: 0 0 15px rgba(255,200,180, 0.3);
+    }
 
     .music-btn {
       width: 50px;
@@ -365,6 +414,11 @@
       <div class="section" data-section="5">
         <div class="btn-container" id="btnContainer">
           <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="播放音乐">♫</button>
+          <div class="theme-buttons">
+            <button class="theme-btn active" onclick="setTheme('rain')" data-theme="rain">🌧️ 下雨</button>
+            <button class="theme-btn" onclick="setTheme('sunny')" data-theme="sunny">☀️ 天晴</button>
+            <button class="theme-btn" onclick="setTheme('fireworks')" data-theme="fireworks">🎆 烟花</button>
+          </div>
           <button class="btn" id="nextBtn" onclick="nextAction()">NEXT</button>
         </div>
       </div>
@@ -373,10 +427,13 @@
 
   <div class="text-result" id="textResult">你值得所有美好</div>
 
-  <!-- 音乐播放器 - 使用简单纯音频 -->
+  <!-- 音乐播放器 -->
   <audio id="bgMusic" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3?filename=gentle-piano-111842.mp3" type="audio/mpeg">
   </audio>
+
+  <!-- 下雨画布 -->
+  <canvas id="rain-canvas"></canvas>
 
   <div class="final-blessing" id="finalBlessing">
     <div class="final-blessing-text">
@@ -755,6 +812,122 @@
       heartCtx.globalAlpha = 1;
     }
 
+    // ========== 主题系统 ==========
+    var currentTheme = 'fireworks';
+    var rainParticles = [];
+    var sunRays = [];
+    
+    // 初始化下雨效果
+    function initRain() {
+      for (var i = 0; i < 200; i++) {
+        rainParticles.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          length: 10 + Math.random() * 10,
+          speed: 5 + Math.random() * 5,
+          opacity: 0.3 + Math.random() * 0.4
+        });
+      }
+    }
+    
+    // 初始化天晴效果
+    function initSunny() {
+      for (var i = 0; i < 12; i++) {
+        sunRays.push({
+          angle: (i / 12) * Math.PI * 2,
+          length: 100 + Math.random() * 100,
+          speed: 0.001 + Math.random() * 0.001,
+          opacity: 0.1 + Math.random() * 0.2
+        });
+      }
+    }
+    
+    // 绘制下雨效果
+    function drawRain() {
+      var rainCanvas = document.getElementById('rain-canvas');
+      if (!rainCanvas) return;
+      var rainCtx = rainCanvas.getContext('2d');
+      
+      rainCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+      rainCtx.strokeStyle = 'rgba(174, 194, 224, 0.5)';
+      rainCtx.lineWidth = 1;
+      
+      rainParticles.forEach(function(p) {
+        rainCtx.beginPath();
+        rainCtx.moveTo(p.x, p.y);
+        rainCtx.lineTo(p.x, p.y + p.length);
+        rainCtx.globalAlpha = p.opacity;
+        rainCtx.stroke();
+        
+        p.y += p.speed;
+        if (p.y > window.innerHeight) {
+          p.y = -20;
+          p.x = Math.random() * window.innerWidth;
+        }
+      });
+      
+      rainCtx.globalAlpha = 1;
+    }
+    
+    // 绘制天晴效果
+    function drawSunny() {
+      var rainCanvas = document.getElementById('rain-canvas');
+      if (!rainCanvas) return;
+      var sunnyCtx = rainCanvas.getContext('2d');
+      
+      sunnyCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+      
+      // 绘制太阳
+      var sunX = window.innerWidth * 0.8;
+      var sunY = window.innerHeight * 0.15;
+      var gradient = sunnyCtx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 80, 'rgba(255, 200, 100, 0.8)', 'rgba(255, 180, 50, 0.3)');
+      sunnyCtx.fillStyle = gradient;
+      sunnyCtx.beginPath();
+      sunnyCtx.arc(sunX, sunY, 80, 0, Math.PI * 2);
+      sunnyCtx.fill();
+      
+      // 绘制光芒
+      sunnyCtx.strokeStyle = 'rgba(255, 220, 100, 0.3)';
+      sunnyCtx.lineWidth = 2;
+      sunRays.forEach(function(ray) {
+        ray.angle += ray.speed;
+        sunnyCtx.beginPath();
+        sunnyCtx.moveTo(sunX, sunY);
+        sunnyCtx.lineTo(
+          sunX + Math.cos(ray.angle) * ray.length,
+          sunY + Math.sin(ray.angle) * ray.length
+        );
+        sunnyCtx.globalAlpha = ray.opacity;
+        sunnyCtx.stroke();
+      });
+      
+      sunnyCtx.globalAlpha = 1;
+    }
+    
+    // 切换主题
+    function setTheme(theme) {
+      currentTheme = theme;
+      
+      // 更新按钮状态
+      document.querySelectorAll('.theme-btn').forEach(function(btn) {
+        btn.classList.remove('active');
+        if (btn.dataset.theme === theme) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // 初始化对应效果
+      if (theme === 'rain') {
+        if (rainParticles.length === 0) initRain();
+        document.body.style.background = '#1a1a2e';
+      } else if (theme === 'sunny') {
+        if (sunRays.length === 0) initSunny();
+        document.body.style.background = 'linear-gradient(135deg, #4a7c59 0%, #7c947a 100%, #a8e6cf 100%)';
+      } else if (theme === 'fireworks') {
+        document.body.style.background = '#0a0a14';
+      }
+    }
+
     // ========== 动画循环 ==========
     function animate() {
       // 烟花画布 - 半透明覆盖产生拖尾
@@ -780,6 +953,13 @@
       // 心形粒子
       if (isStarted) {
         drawHeartParticles();
+      }
+      
+      // 主题效果
+      if (currentTheme === 'rain') {
+        drawRain();
+      } else if (currentTheme === 'sunny') {
+        drawSunny();
       }
       
       requestAnimationFrame(animate);
