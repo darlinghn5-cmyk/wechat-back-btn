@@ -4,19 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>致亲爱的你</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     
     body {
       min-height: 100vh;
-      background: #0a0a14;
+      background: #0A0A12;
       font-family: 'Noto Serif SC', serif;
       overflow-x: hidden;
-      color: #f5f0e6;
+      color: #E0D9D1;
     }
 
-    #fireworks-canvas {
+    /* Canvas */
+    #canvas {
       position: fixed;
       top: 0;
       left: 0;
@@ -26,7 +31,8 @@
       pointer-events: none;
     }
 
-    #heart-canvas {
+    /* 下雨画布 */
+    #rain-canvas {
       position: fixed;
       top: 0;
       left: 0;
@@ -36,338 +42,267 @@
       pointer-events: none;
     }
 
-    #rain-canvas {
+    /* 太阳光画布 */
+    #sunny-canvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 3;
+      z-index: 2;
       pointer-events: none;
     }
 
-    .glow {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .glow-1 {
-      top: -150px;
-      left: -150px;
-      width: 300px;
-      height: 300px;
-      background: rgba(255, 154, 162, 0.1);
-      animation: float1 8s ease-in-out infinite;
-    }
-
-    .glow-2 {
-      bottom: -100px;
-      right: -100px;
-      width: 250px;
-      height: 250px;
-      background: rgba(181, 234, 215, 0.08);
-      animation: float2 10s ease-in-out infinite;
-    }
-
-    @keyframes float1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(30px, 30px); } }
-    @keyframes float2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-20px, -20px); } }
-
-    .intro {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #0a0a14;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 1.5s ease, visibility 1.5s;
-    }
-
-    .intro.hidden { opacity: 0; visibility: hidden; }
-
-    .intro-content { text-align: center; padding: 40px; }
-    .intro-text { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 40px; line-height: 2; }
-
-    .btn {
-      padding: 16px 50px;
-      background: transparent;
-      border: 1px solid rgba(255,200,180,0.4);
-      color: #ffc8b4;
-      font-size: 15px;
-      cursor: pointer;
-      transition: all 0.5s;
-      font-family: 'Noto Serif SC', serif;
-      letter-spacing: 4px;
-      position: relative;
-      z-index: 200;
-    }
-
-    .btn:hover {
-      background: rgba(255,200,180,0.15);
-      border-color: rgba(255,200,180,0.6);
-      transform: scale(1.05);
-    }
-
-    .container {
+    /* 主容器 */
+    .main-container {
       position: relative;
       z-index: 10;
-      min-height: 100vh;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    /* 第一页：启动页 - 大雨效果 */
+    .intro-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
-      transition: opacity 1s;
+      overflow-x: hidden;
+      background: #0A0A12;
     }
 
-    .content {
-      max-width: 580px;
-      width: 100%;
-      text-align: center;
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 50px 40px;
-      border: 1px solid rgba(255,255,255,0.08);
+    .intro-text {
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      line-height: 2;
+      color: #E0D9D1;
+      margin-bottom: 80px;
+      text-shadow: 0 0 30px 10px rgba(0,0,0,0.3);
     }
 
-    .section {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.8s ease;
-      margin-bottom: 35px;
-    }
-
-    .section.visible { opacity: 1; transform: translateY(0); }
-
-    .header-section {
+    .intro-btn {
+      padding: 18px 60px;
+      width: 280px;
+      height: 60px;
+      background: transparent;
+      border: 1px solid #F8C3A9;
+      color: #F8C3A9;
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 30px;
-      margin-bottom: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Noto Serif SC', sans-serif;
+      border-radius: 0;
     }
 
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      position: relative;
+    .intro-btn:hover {
+      background: rgba(248, 195, 169, 0.1);
+      box-shadow: inset 0 0 8px rgba(248, 195, 169, 0.2);
+    }
+
+    /* 主页 - 天晴效果 */
+    .main-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       z-index: 10;
-      animation: avatar-float 3s ease-in-out infinite;
-      background: linear-gradient(135deg, rgba(255,200,180,0.3), rgba(255,107,157,0.3));
-      padding: 3px;
-      box-shadow: 0 0 20px rgba(255,200,180,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #4a7c59 0%, #7c947a 100%, #a8e6cf 100%);
+      display: none;
+      opacity: 0;
+      transition: opacity 1s;
     }
 
-    .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
-    @keyframes avatar-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-    .header-text { flex: 1; }
-    .date-mark { font-size: 11px; letter-spacing: 5px; color: rgba(255,200,180,0.5); margin-bottom: 10px; }
-    .main-title { font-size: 26px; font-weight: 400; letter-spacing: 6px; margin-bottom: 12px; color: #ffc8b4; }
-    .sub-title { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 2px; margin-bottom: 8px; }
-    .gift-text { font-size: 13px; color: rgba(255,200,180,0.6); margin-top: 8px; letter-spacing: 2px; font-style: italic; }
-
-    .tags { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .tag { font-size: 11px; padding: 6px 16px; border: 1px solid rgba(255,200,180,0.25); color: rgba(255,200,180,0.7); letter-spacing: 1px; }
-
-    .divider { width: 40px; height: 1px; background: rgba(255,200,180,0.3); margin: 25px auto; }
-
-    .letter { text-align: left; padding: 20px; background: rgba(0,0,0,0.2); border-left: 2px solid rgba(255,200,180,0.3); border-radius: 0 10px 10px 0; }
-    .letter p { font-size: 14px; line-height: 2; margin-bottom: 12px; color: rgba(255,255,255,0.85); text-indent: 2em; }
-    .letter .highlight { color: #ffc8b4; }
-
-    .final-words { font-size: 16px; line-height: 2.2; color: #ffc8b4; padding: 15px 0; }
-
-    .btn-container { 
-      margin-top: 30px; 
-      opacity: 0; 
-      transition: opacity 0.5s; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 20px; 
-      align-items: center; 
+    .main-page.show {
+      display: flex;
+      opacity: 1;
     }
-    .btn-container.show { opacity: 1; }
 
-    .theme-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-    .theme-btn { padding: 10px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,200,180,0.3); color: rgba(255,200,180,0.7); font-size: 12px; cursor: pointer; transition: all 0.3s; font-family: 'Noto Serif SC', serif; letter-spacing: 1px; border-radius: 20px; }
-    .theme-btn:hover, .theme-btn.active { background: rgba(255,200,180,0.2); border-color: rgba(255,200,180,0.5); transform: scale(1.05); }
-    .theme-btn.active { box-shadow: 0 0 15px rgba(255,200,180,0.3); }
+    .main-content {
+      text-align: center;
+      padding: 40px 20px;
+      max-width: 600px;
+    }
 
-    .music-btn { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,200,180,0.1); border: 1px solid rgba(255,200,180,0.4); color: #ffc8b4; font-size: 20px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; position: relative; z-index: 200; }
-    .music-btn:hover { background: rgba(255,200,180,0.2); border-color: rgba(255,200,180,0.6); transform: scale(1.1); }
-    .music-btn.playing { animation: pulse-music 1s ease-in-out infinite; }
-    @keyframes pulse-music { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    .main-title {
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      line-height: 2;
+      color: #E0D9D1;
+      margin-bottom: 80px;
+      text-shadow: 0 0 30px 10px rgba(0,0,0,0.3);
+    }
 
-    .final-blessing { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; visibility: hidden; transition: all 1s; background: rgba(10, 10, 20, 0.7); }
-    .final-blessing.show { opacity: 1; visibility: visible; }
-    .final-blessing-text { font-size: 28px; color: #ffc8b4; letter-spacing: 8px; text-shadow: 0 0 40px rgba(255,200,180,0.5); text-align: center; line-height: 2; }
+    .main-btn {
+      padding: 18px 60px;
+      width: 280px;
+      height: 60px;
+      background: transparent;
+      border: 1px solid #F8C3A9;
+      color: #F8C3A9;
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Noto Serif SC', sans-serif;
+      border-radius: 0;
+    }
 
-    .text-result { position: fixed; top: 10%; left: 50%; transform: translateX(-50%); font-size: 32px; color: #ffc8b4; z-index: 50; opacity: 0; pointer-events: none; text-shadow: 0 0 30px rgba(255,200,180,0.5); letter-spacing: 8px; font-weight: 600; }
-    .text-result.show { animation: textReveal 5s ease-out forwards; }
-    @keyframes textReveal { 0% { opacity: 0; transform: translateX(-50%) scale(0.5); } 15% { opacity: 1; transform: translateX(-50%) scale(1.1); } 25% { transform: translateX(-50%) scale(1); } 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) scale(1); } }
+    .main-btn:hover {
+      background: rgba(248, 195, 169, 0.1);
+      box-shadow: inset 0 0 8px rgba(248, 195, 169, 0.2);
+    }
 
+    /* 太阳效果 */
+    .sun {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.8), rgba(255, 180, 0, 0.3));
+      border-radius: 50%;
+      box-shadow: 0 0 30px 20px rgba(255, 215, 0, 0.4);
+      z-index: 0;
+    }
+
+    .sun-ray {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: top center;
+      transform: translateX(-50%, -50%);
+    }
+
+    .sun-ray::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 3px;
+      height: 80px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), transparent);
+      transform-origin: top center;
+      transform: translateX(-50%, -50%);
+    }
+
+    /* 下雨动画 */
+    .raindrop {
+      position: absolute;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, rgba(174, 194, 224, 0.6), rgba(174, 194, 224, 0.1));
+      animation: rain linear infinite;
+    }
+
+    @keyframes rain {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0.3;
+      }
+    }
+
+    /* 淡入效果 */
+    .fade-in {
+      animation: fadeIn 1.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 响应式 */
     @media (max-width: 480px) {
-      .content { padding: 30px 20px; }
-      .header-section { flex-direction: column; gap: 20px; }
-      .avatar { width: 60px; height: 60px; }
-      .main-title { font-size: 22px; letter-spacing: 4px; }
-      .letter { padding: 15px; }
-      .letter p { font-size: 13px; }
-      .final-blessing-text { font-size: 22px; letter-spacing: 4px; }
-      .gift-text { font-size: 11px; }
+      .intro-text { font-size: 24px; }
+      .intro-btn, .main-btn { width: 240px; height: 56px; font-size: 18px; }
+      .sun { width: 100px; height: 100px; }
     }
   </style>
 </head>
 <body>
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
-
-  <canvas id="fireworks-canvas"></canvas>
-  <canvas id="heart-canvas"></canvas>
-  <canvas id="rain-canvas"></canvas>
-
-  <div class="intro" id="intro">
-    <div class="intro-content">
-      <p class="intro-text">"有些人，光是遇见，就已经很美好了"</p>
-      <button class="btn" onclick="start()">轻触开启</button>
-    </div>
-  </div>
-
-  <div class="container" id="container" style="visibility: hidden;">
-    <div class="content">
-      <div class="section" data-section="1">
-        <div class="header-section">
-          <div class="avatar">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffdac1'/%3E%3Ctext x='50' y='60' text-anchor='middle' font-size='24' fill='%23fff'%3E💝%3C/text%3E%3C/svg%3E" alt="头像" />
-          </div>
-          <div class="header-text">
-            <div class="date-mark">二〇二五 · 三月八日</div>
-            <h1 class="main-title">致亲爱的你</h1>
-            <p class="sub-title">TO MY DEAREST GEMINI</p>
-            <p class="gift-text">送给那个傻乎乎的女孩小小礼物</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" data-section="2">
-        <div class="tags">
-          <span class="tag">♊ 双子座</span>
-          <span class="tag">ISFP-T</span>
-          <span class="tag">温柔的灵魂</span>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="section" data-section="3">
-        <div class="letter">
-          <p>最近的日子，或许有些难熬。我知道，这个世界有时候并不温柔，生活的重量会让人喘不过气来。</p>
-          <p>但我想告诉你：<span class="highlight">即使在最难的时候，我依然想为你花一点心思</span>，只为让你在某个瞬间，能轻轻笑一下。</p>
-          <p>双子座的你，有着两颗星星的灵魂——一颗理性清醒，一颗温柔敏感。ISFP的你，是最懂得用心灵去感受美的人。</p>
-        </div>
-      </div>
-
-      <div class="section" data-section="4">
-        <div class="final-words">
-          <p>愿你有盔甲，也有软肋</p>
-          <p>愿你在被打击时</p>
-          <p>记得自己的珍贵</p>
-          <p style="margin-top: 15px; font-size: 14px; color: rgba(255,200,180,0.6);">你一直被珍视着 ✨</p>
-        </div>
-      </div>
-
-      <div class="section" data-section="5">
-        <div class="btn-container" id="btnContainer">
-          <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="播放音乐">♫</button>
-          <div class="theme-buttons">
-            <button class="theme-btn active" onclick="setTheme('rain')" data-theme="rain">🌧️ 下雨</button>
-            <button class="theme-btn" onclick="setTheme('sunny')" data-theme="sunny">☀️ 天晴</button>
-            <button class="theme-btn" onclick="setTheme('fireworks')" data-theme="fireworks">🎆 烟花</button>
-          </div>
-          <button class="btn" id="nextBtn" onclick="nextAction()">NEXT</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="text-result" id="textResult">你值得所有美好</div>
-
-  <!-- 音乐播放器 -->
-  <audio id="bgMusic" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3?filename=gentle-piano-111842.mp3" type="audio/mpeg">
-  </audio>
-
   <!-- 下雨画布 -->
-  <canvas id="rain-canvas"></canvas>
+  <div id="rain-canvas"></div>
 
-  <div class="final-blessing" id="finalBlessing">
-    <div class="final-blessing-text">
-      <p>愿所有美好</p>
-      <p>都如期而至</p>
-      <p style="margin-top: 30px; font-size: 16px; color: rgba(255,200,180,0.7);">2025.3.8 💝</p>
-    </div>
+  <!-- 第一页：启动页 -->
+  <div class="intro-page" id="introPage">
+    <div class="intro-text">有些人，光是遇见，就已经很美好了</div>
+    <button class="intro-btn" onclick="goToMain()">轻触开启</button>
   </div>
+
+  <!-- 第二页：主页面 - 天晴效果 -->
+  <div class="main-page" id="mainPage">
+    <div class="main-content">
+      <h1 class="main-title">致亲爱的你</h1>
+      <button class="main-btn" onclick="goToFinish()">查看最后惊喜</button>
+    </div>
+
+  <!-- Canvas -->
+  <canvas id="canvas"></canvas>
+
+  <!-- 太阳 -->
+  <div class="sun" id="sun"></div>
 
   <script>
-    // ========== 抖音花系统 - 参考抖音效果 ==========
-    const fwCanvas = document.getElementById('fireworks-canvas');
-    const fwCtx = fwCanvas.getContext('2d');
-    
-    // ========== 心形粒子系统 ==========
-    const heartCanvas = document.getElementById('heart-canvas');
-    const heartCtx = heartCanvas.getContext('2d');
+    // 配置
+    const goldColors = ['#FFD700', '#FFA500', '#FFCC00', '#FFF8DC', '#FFDAB9', '#FFF5934'];
+    const redColors = ['#FF0000', '#FF4500', '#FF6B6B', '#DC143C', '#FF2400', '#FF3C3C', '#FF5722'];
 
-    // 颜色 - 真实烟花颜色 + 色色系
-    const colors = [
-      // 金色系
-      '#FFD700', '#FFA500', '#FFB347', '#FFCC00', '#FFFACD',
-      // 红色系
-      '#FF0000', '#FF4500', '#FF6B6B', '#DC143C', '#FF4500',
-      // 绿色系
-      '#00FF00', '#32CD32', '#00FA9A', '#7FFF00', '#ADFF2F',
-      // 蓝色系
-      '#00BFFF', '#1E90FF', '#4169E1', '#00CED1', '#6495ED',
-      // 紫色系
-      '#9932CC', '#BA55D3', '#DA70D6', '#FF00FF', '#E066FF',
-      // 银白色系
-      '#FFFFFF', '#F8F8FF', '#E8E8E8', '#D3D3D3', '#C0C0C0',
-      // 橙色系
-      '#FF8C00', '#FF7F50', '#FF6347', '#FFA07A', '#FFD700'
-    ];
-
-    // 星芒颜色 - 亮色为主
-    const rayColors = ['#FFFFFF', '#FFF8DC', '#FFFFE0', '#FFFACD', '#FFE4E1', '#FFFACD', '#FFF0F5', '#FFF5EE', '#FFFAFA', '#FFFFF0'];
-
-    // 存储数组
-    let fireworks = [];
+    let currentMode = 'intro';
+    let canvas, ctx;
     let particles = [];
-    let heartParticles = [];
-    let rainParticles = [];
+    let raindrops = [];
     let sunRays = [];
-    
-    let isStarted = false;
-    let currentStep = 0;
 
-    // 调整画布大小
-    function resizeCanvas() {
-      fwCanvas.width = heartCanvas.width = rainCanvas.width = window.innerWidth;
-      fwCanvas.height = heartCanvas.height = rainCanvas.height = window.innerHeight;
+    function initCanvas() {
+      canvas = document.getElementById('canvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
     }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
     // ========== 烟花类 ==========
     class Firework {
-      constructor(sx, sy, tx, ty) {
+      constructor(sx, sy, tx, ty, color) {
         this.x = sx;
         this.y = sy;
         this.sx = sx;
@@ -388,9 +323,7 @@
         this.angle = Math.atan2(ty - sy, tx - sx);
         this.speed = 3;
         this.acceleration = 1.03;
-        this.brightness = Math.random() * 20 + 50;
-        this.color = colors[Math.floor(Math.random() * colors.length)];
-        this.targetRadius = 1;
+        this.color = color;
         this.hasExploded = false;
       }
 
@@ -420,22 +353,21 @@
       }
 
       draw() {
-        fwCtx.beginPath();
-        fwCtx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
-        fwCtx.lineTo(this.x, this.y);
-        fwCtx.strokeStyle = this.color;
-        fwCtx.lineWidth = 3;
-        fwCtx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
+        ctx.lineTo(this.x, this.y);
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
         
-        // 头部光点
-        fwCtx.beginPath();
-        fwCtx.arc(this.x, this.y, 4, 0, Math.PI * 2);
-        fwCtx.fillStyle = '#fff';
-        fwCtx.fill();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
       }
     }
 
-    // ========== 爆炸粒子类 - 参考抖音效果 ==========
+    // 爆炸粒子类
     class Particle {
       constructor(x, y, color, type) {
         this.x = x;
@@ -452,33 +384,18 @@
         
         this.angle = Math.random() * Math.PI * 2;
         
-        // 根据类型设置不同属性
-        if (type === 'star') {
-          // 星芒粒子 - 更大更亮
-          this.speed = 3 + Math.random() * 4;
-          this.size = 3 + Math.random() * 2;
-          this.friction = 0.97;
-          this.gravity = 0.5;
-          this.decay = 0.008 + Math.random() * 0.005;
-          this.isStar = true;
-        } else if (type === 'ray') {
-          // 光柱粒子 - 垂直向下
-          this.angle = Math.PI / 2;
-          this.speed = 4 + Math.random() * 3;
-          this.size = 2 + Math.random() * 3;
-          this.friction = 0.99;
-          this.gravity = 0.2;
-          this.decay = 0.005 + Math.random() * 0.003;
-          this.isRay = true;
+        // 金色和红色粒子更大、更亮
+        if (color.includes('FF')) {
+          this.speed = 3 + Math.random() * 3;
+          this.size = 2 + Math.random() * 2;
         } else {
-          // 普通粒子
-          this.speed = 2 + Math.random() * 3;
+          this.speed = 2 + Math.random() * 2;
           this.size = 1.5 + Math.random() * 2;
-          this.friction = 0.96;
-          this.gravity = 0.8;
-          this.decay = 0.015 + Math.random() * 0.01;
         }
         
+        this.friction = 0.97;
+        this.gravity = 0.8;
+        this.decay = 0.012 + Math.random() * 0.008;
         this.alpha = 1;
         this.hasTrail = true;
       }
@@ -503,76 +420,35 @@
       }
 
       draw() {
-        // 绘制拖尾
         if (this.hasTrail && this.coordinates.length > 2) {
           for (var i = 0; i < this.coordinates.length; i++) {
             var alpha = (i / this.coordinates.length) * (this.alpha * 0.8);
-            fwCtx.beginPath();
-            fwCtx.moveTo(this.coordinates[i][0], this.coordinates[i][1]);
-            fwCtx.lineTo(this.coordinates[i + 1][0], this.coordinates[i + 1][1]);
-            fwCtx.strokeStyle = this.color;
-            fwCtx.globalAlpha = alpha * 0.5;
-            fwCtx.lineWidth = this.size * 0.5;
-            fwCtx.lineCap = 'round';
-            fwCtx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(this.coordinates[i][0], this.coordinates[i][1]);
+            ctx.lineTo(this.coordinates[i + 1][0], this.coordinates[i + 1][1]);
+            ctx.strokeStyle = this.color;
+            ctx.globalAlpha = alpha * 0.5;
+            ctx.lineWidth = this.size * 0.5;
+            ctx.lineCap = 'round';
+            ctx.stroke();
           }
         }
         
-        if (this.isStar) {
-          // 星芒效果 - 放射光芒
-          for (var i = 0; i < 8; i++) {
-            var angle = this.angle + (i / 8) * Math.PI * 2;
-            var rayLength = this.size * 4 + Math.random() * 8;
-            fwCtx.beginPath();
-            fwCtx.moveTo(this.x, this.y);
-            fwCtx.lineTo(
-              this.x + Math.cos(angle) * rayLength,
-              this.y + Math.sin(angle) * rayLength
-            );
-            fwCtx.strokeStyle = rayColors[Math.floor(Math.random() * rayColors.length)];
-            fwCtx.globalAlpha = this.alpha * 0.6;
-            fwCtx.lineWidth = 1;
-            fwCtx.stroke();
-          }
-          
-          // 核心光点
-          fwCtx.beginPath();
-          fwCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          fwCtx.fillStyle = '#fff';
-          fwCtx.globalAlpha = this.alpha;
-          fwCtx.fill();
-        } else if (this.isRay) {
-          // 光柱粒子 - 长光束
-          var gradient = fwCtx.createLinearGradient(0, 0, 0, -300);
-          gradient.addColorStop(0, this.color);
-          gradient.addColorStop(1, 'transparent');
-          fwCtx.beginPath();
-          fwCtx.moveTo(this.x, this.y);
-          fwCtx.lineTo(this.x, this.y + 300);
-          fwCtx.strokeStyle = gradient;
-          fwCtx.globalAlpha = this.alpha * 0.8;
-          fwCtx.lineWidth = 4;
-          fwCtx.stroke();
-        } else {
-          // 普通粒子 - 带拖尾
-          fwCtx.beginPath();
-          fwCtx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
-          fwCtx.lineTo(this.x, this.y);
-          fwCtx.strokeStyle = this.color;
-          fwCtx.globalAlpha = this.alpha;
-          fwCtx.lineWidth = this.size * 1.5;
-          fwCtx.lineCap = 'round';
-          fwCtx.stroke();
-          
-          // 核心光晕
-          fwCtx.beginPath();
-          fwCtx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
-          fwCtx.fillStyle = this.color;
-          fwCtx.globalAlpha = this.alpha * 0.3;
-          fwCtx.fill();
-        }
+        // 粒子主体
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.alpha;
+        ctx.fill();
         
-        fwCtx.globalAlpha = 1;
+        // 光晕
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.alpha * 0.3;
+        ctx.fill();
+        
+        ctx.globalAlpha = 1;
       }
 
       isAlive() {
@@ -580,297 +456,68 @@
       }
     }
 
-    // 创建爆炸 - 参考抖音效果
+    // 创建爆炸 - 只有金色和红色
     function createExplosion(x, y, isBig) {
-      // 普通粒子
-      var particleCount = isBig ? 200 : 100;
-      var color = colors[Math.floor(Math.random() * colors.length)];
+      var particleCount = isBig ? 150 : 80;
+      
+      // 只用金色和红色
+      var useGold = Math.random() > 0.3;
+      var color = useGold ? 
+        goldColors[Math.floor(Math.random() * goldColors.length)] : 
+        redColors[Math.floor(Math.random() * redColors.length)];
+      
       for (var i = 0; i < particleCount; i++) {
         particles.push(new Particle(x, y, color));
       }
-      
-      // 星芒粒子 - 大量
-      for (var i = 0; i < (isBig ? 100 : 50); i++) {
-        particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)], 'star'));
-      }
-      
-      // 光柱粒子 - 垂直光束
-      for (var i = 0; i < (isBig ? 15 : 8); i++) {
-        particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)], 'ray'));
-      }
-      
-      // 多色粒子
-      for (var i = 0; i < (isBig ? 120 : 60); i++) {
-        particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
-      }
     }
 
-    // 创建烟花
-    function launchFirework() {
-      var sx = fwCanvas.width / 2;
-      var sy = fwCanvas.height;
-      var tx = Math.random() * fwCanvas.width;
-      var ty = Math.random() * fwCanvas.height * 0.5;
-      fireworks.push(new Firework(sx, sy, tx, ty));
-    }
-
-    // 创建多个烟花
-    function launchMultipleFireworks(count) {
-      for (var i = 0; i < count; i++) {
-        setTimeout(function() {
-          launchFirework();
-        }, i * 150);
-      }
-    }
-
-    // 创建满屏烟花 - 参考抖音效果
-    function launchFullScreenFireworks() {
-      // 左侧
-      for (var i = 0; i < 5; i++) {
-        setTimeout(function() {
-          var sx = fwCanvas.width * 0.2 + Math.random() * fwCanvas.width * 0.1;
-          var tx = fwCanvas.width * 0.15 + Math.random() * fwCanvas.width * 0.2;
-          var ty = fwCanvas.height * 0.2 + Math.random() * fwCanvas.height * 0.25;
-          fireworks.push(new Firework(sx, fwCanvas.height, tx, ty));
-        }, i * 100);
-      }
-      
-      // 中间
-      for (var i = 0; i < 6; i++) {
-        setTimeout(function() {
-          var sx = fwCanvas.width * 0.45 + Math.random() * fwCanvas.width * 0.1;
-          var tx = fwCanvas.width * 0.35 + Math.random() * fwCanvas.width * 0.3;
-          var ty = fwCanvas.height * 0.15 + Math.random() * fwCanvas.height * 0.3;
-          fireworks.push(new Firework(sx, fwCanvas.height, tx, ty));
-        }, i * 120 + 300);
-      }
-      
-      // 右侧
-      for (var i = 0; i < 5; i++) {
-        setTimeout(function() {
-          var sx = fwCanvas.width * 0.7 + Math.random() * fwCanvas.width * 0.1;
-          var tx = fwCanvas.width * 0.65 + Math.random() * fwCanvas.width * 0.2;
-          var ty = fwCanvas.height * 0.2 + Math.random() * fwCanvas.height * 0.25;
-          fireworks.push(new Firework(sx, fwCanvas.height, tx, ty));
-        }, i * 100 + 600);
-      }
-    }
-
-    // 创建超级烟花 - 连续多波缓缓升起
-    function launchSuperFireworks() {
-      var waves = 5;
-      var perWave = 8;
-      
-      for (var wave = 0; wave < waves; wave++) {
-        (function(w) {
-          setTimeout(function() {
-            for (var i = 0; i < perWave; i++) {
-              setTimeout(function() {
-                var sx = Math.random() * fwCanvas.width;
-                var tx = fwCanvas.width * 0.1 + Math.random() * fwCanvas.width * 0.8;
-                var ty = fwCanvas.height * 0.12 + Math.random() * fwCanvas.height * 0.38;
-                
-                var fw = new Firework(sx, fwCanvas.height, tx, ty);
-                fw.speed = 2 + Math.random() * 1.5;
-                fireworks.push(fw);
-              }, i * 80);
-            }
-          }, w * 400);
-        })(wave);
-      }
-    }
-
-    // 终极烟花 - 最盛大的效果
-    function launchUltimateFireworks() {
+    // 创建满屏烟花 - 只有金色和红色
+    function createBigFireworks() {
       var totalWaves = 8;
+      var perWave = 10;
       
       for (var wave = 0; wave < totalWaves; wave++) {
         (function(w) {
           setTimeout(function() {
-            var count = 10 + Math.floor(Math.random() * 5);
-            
-            for (var i = 0; i < count; i++) {
+            for (var i = 0; i < perWave; i++) {
               setTimeout(function() {
-                var sx = Math.random() * fwCanvas.width;
-                var tx = fwCanvas.width * 0.1 + Math.random() * fwCanvas.width * 0.8;
-                var ty = fwCanvas.height * 0.1 + Math.random() * fwCanvas.height * 0.4;
+                var sx = Math.random() * canvas.width;
+                var tx = canvas.width * 0.1 + Math.random() * canvas.width * 0.8;
+                var ty = canvas.height * 0.1 + Math.random() * canvas.height * 0.4;
                 
-                var fw = new Firework(sx, fwCanvas.height, tx, ty);
-                fw.speed = 2.5 + Math.random() * 1.5;
+                var useGold = Math.random() > 0.4;
+                var color = useGold ? 
+                  goldColors[Math.floor(Math.random() * goldColors.length)] : 
+                  redColors[Math.floor(Math.random() * redColors.length)];
+                
+                var fw = new Firework(sx, canvas.height, tx, ty, color);
                 fireworks.push(fw);
-              }, i * 60);
+              }, i * 50);
             }
-          }, w * 300);
+          }, w * 200);
         })(wave);
       }
     }
 
-    // ========== 心形粒子 ==========
-    function getHeartPoint(t, scale) {
-      var x = 16 * Math.pow(Math.sin(t), 3);
-      var y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-      var centerX = heartCanvas.width / 2;
-      var centerY = heartCanvas.height / 2 - 50;
-      var heartScale = Math.min(heartCanvas.width, heartCanvas.height) * 0.1 * scale;
-      return {
-        x: centerX + x * heartScale / 16,
-        y: centerY - y * heartScale / 16
-      };
-    }
-
-    function createHeartParticles() {
-      for (var i = 0; i < 120; i++) {
-        var t = Math.random() * Math.PI * 2;
-        var scale = 0.5 + Math.random() * 0.6;
-        var point = getHeartPoint(t, scale);
-        
-        heartParticles.push({
-          x: point.x,
-          y: point.y,
-          baseX: point.x,
-          baseY: point.y,
-          size: 1 + Math.random() * 1.5,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          alpha: 0.3 + Math.random() * 0.4,
-          angle: Math.random() * Math.PI * 2,
-          speed: 0.002 + Math.random() * 0.003
-        });
+    // 初始化
+    function init() {
+      resizeCanvas();
+      // 创建雨滴
+      for (var i = 0; i < 300; i++) {
+        var drop = document.createElement('div');
+        drop.className = 'raindrop';
+        drop.style.left = Math.random() * 100 + '%';
+        drop.style.animationDelay = Math.random() * 5 + 's';
+        drop.style.animationDuration = (2 + Math.random() * 3) + 's';
+        drop.style.opacity = 0.4 + Math.random() * 0.4;
+        document.getElementById('rain-canvas').appendChild(drop);
       }
     }
 
-    function drawHeartParticles() {
-      heartCtx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
-      var time = Date.now();
-      
-      heartParticles.forEach(function(p) {
-        var heartbeat = Math.sin(time * 0.003) * 0.15;
-        var floatX = Math.sin(time * p.speed + p.angle) * 3;
-        var floatY = Math.cos(time * p.speed + p.angle) * 3;
-        
-        heartCtx.beginPath();
-        heartCtx.arc(p.baseX + floatX, p.baseY + floatY, p.size * (1 + heartbeat), 0, Math.PI * 2);
-        heartCtx.fillStyle = p.color;
-        heartCtx.globalAlpha = p.alpha;
-        heartCtx.fill();
-      });
-      
-      heartCtx.globalAlpha = 1;
-    }
-
-    // ========== 主题系统 ==========
-    var currentTheme = 'fireworks';
-    var rainParticles = [];
-    var sunRays = [];
-    
-    function initRain() {
-      for (var i = 0; i < 200; i++) {
-        rainParticles.push({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          length: 10 + Math.random() * 10,
-          speed: 5 + Math.random() * 5,
-          opacity: 0.3 + Math.random() * 0.4
-        });
-      }
-    }
-    
-    function initSunny() {
-      for (var i = 0; i < 12; i++) {
-        sunRays.push({
-          angle: (i / 12) * Math.PI * 2,
-          length: 100 + Math.random() * 100,
-          speed: 0.001 + Math.random() * 0.001,
-          opacity: 0.1 + Math.random() * 0.2
-        });
-      }
-    }
-    
-    function drawRain() {
-      var rainCanvas = document.getElementById('rain-canvas');
-      if (!rainCanvas) return;
-      var rainCtx = rainCanvas.getContext('2d');
-      
-      rainCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
-      rainCtx.strokeStyle = 'rgba(174, 194, 224, 0.5)';
-      rainCtx.lineWidth = 1;
-      
-      rainParticles.forEach(function(p) {
-        rainCtx.beginPath();
-        rainCtx.moveTo(p.x, p.y);
-        rainCtx.lineTo(p.x, p.y + p.length);
-        rainCtx.globalAlpha = p.opacity;
-        rainCtx.stroke();
-        
-        p.y += p.speed;
-        if (p.y > window.innerHeight) {
-          p.y = -20;
-          p.x = Math.random() * window.innerWidth;
-        }
-      });
-      
-      rainCtx.globalAlpha = 1;
-    }
-    
-    function drawSunny() {
-      var rainCanvas = document.getElementById('rain-canvas');
-      if (!rainCanvas) return;
-      var sunnyCtx = rainCanvas.getContext('2d');
-      
-      sunnyCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
-      
-      var sunX = window.innerWidth * 0.8;
-      var sunY = window.innerHeight * 0.15;
-      var gradient = sunnyCtx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 80, 'rgba(255, 200, 100, 0.8)', 'rgba(255, 180, 50, 0.3)');
-      sunnyCtx.fillStyle = gradient;
-      sunnyCtx.beginPath();
-      sunnyCtx.arc(sunX, sunY, 80, 0, Math.PI * 2);
-      sunnyCtx.fill();
-      
-      sunnyCtx.strokeStyle = 'rgba(255, 220, 100, 0.3)';
-      sunnyCtx.lineWidth = 2;
-      sunRays.forEach(function(ray) {
-        ray.angle += ray.speed;
-        sunnyCtx.beginPath();
-        sunnyCtx.moveTo(sunX, sunY);
-        sunnyCtx.lineTo(
-          sunX + Math.cos(ray.angle) * ray.length,
-          sunY + Math.sin(ray.angle) * ray.length
-        );
-        sunnyCtx.globalAlpha = ray.opacity;
-        sunnyCtx.stroke();
-      });
-      
-      sunnyCtx.globalAlpha = 1;
-    }
-    
-    function setTheme(theme) {
-      currentTheme = theme;
-      
-      document.querySelectorAll('.theme-btn').forEach(function(btn) {
-        btn.classList.remove('active');
-        if (btn.dataset.theme === theme) {
-          btn.classList.add('active');
-        }
-      });
-      
-      if (theme === 'rain') {
-        if (rainParticles.length === 0) initRain();
-        document.body.style.background = '#1a1a2e';
-      } else if (theme === 'sunny') {
-        if (sunRays.length === 0) initSunny();
-        document.body.style.background = 'linear-gradient(135deg, #4a7c59 0%, #7c947a 100%, #a8e6cf 100%)';
-      } else if (theme === 'fireworks') {
-        document.body.style.background = '#0a0a14';
-      }
-    }
-
-    // ========== 动画循环 ==========
+    // 动画循环
     function animate() {
-      // 烟花画布 - 半透明覆盖产生拖尾
-      fwCtx.globalCompositeOperation = 'destination-out';
-      fwCtx.fillStyle = 'rgba(0, 0, 0, 0.12)';
-      fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
-      fwCtx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       var i = fireworks.length;
       while (i--) {
@@ -884,95 +531,8 @@
         particles[j].update(j);
       }
       
-      fwCtx.globalCompositeOperation = 'source-over';
-      
-      // 心形粒子
-      if (isStarted) {
-        drawHeartParticles();
-      }
-      
-      // 主题效果
-      if (currentTheme === 'rain') {
-        drawRain();
-      } else if (currentTheme === 'sunny') {
-        drawSunny();
-      }
-      
       requestAnimationFrame(animate);
     }
-
-    // ========== NEXT 动作 ==========
-    function nextAction() {
-      currentStep++;
-      
-      if (currentStep === 1) {
-        launchFullScreenFireworks();
-        document.getElementById('nextBtn').textContent = 'NEXT';
-      } else if (currentStep === 2) {
-        launchSuperFireworks();
-        document.getElementById('nextBtn').textContent = 'FINISH';
-      } else if (currentStep >= 3) {
-        launchUltimateFireworks();
-        
-        document.getElementById('btnContainer').style.display = 'none';
-        document.getElementById('container').style.opacity = '0';
-        
-        setTimeout(function() {
-          document.getElementById('finalBlessing').classList.add('show');
-          launchUltimateFireworks();
-        }, 1500);
-      }
-    }
-
-    // ========== 音乐控制 ==========
-    var isMusicPlaying = false;
-    var bgMusic = null;
-
-    function toggleMusic() {
-      if (!bgMusic) {
-        bgMusic = document.getElementById('bgMusic');
-      }
-      
-      var musicBtn = document.getElementById('musicBtn');
-      
-      if (isMusicPlaying) {
-        bgMusic.pause();
-        musicBtn.classList.remove('playing');
-        musicBtn.textContent = '♫';
-        isMusicPlaying = false;
-      } else {
-        bgMusic.play().then(function() {
-          musicBtn.classList.add('playing');
-          musicBtn.textContent = '❚❚';
-          isMusicPlaying = true;
-        }).catch(function(e) {
-          console.log('播放失败，请点击重试');
-        });
-      }
-    }
-
-    // ========== 开始 ==========
-    function start() {
-      document.getElementById('intro').classList.add('hidden');
-      document.getElementById('container').style.visibility = 'visible';
-      
-      isStarted = true;
-      createHeartParticles();
-      
-      var sections = document.querySelectorAll('.section');
-      sections.forEach(function(section, index) {
-        setTimeout(function() {
-          section.classList.add('visible');
-        }, 500 + index * 600);
-      });
-      
-      setTimeout(function() {
-        document.getElementById('btnContainer').classList.add('show');
-      }, 3500);
-    }
-
-    // 启动动画
-    animate();
   </script>
 </body>
 </html>
