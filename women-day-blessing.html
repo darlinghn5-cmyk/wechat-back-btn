@@ -449,7 +449,7 @@
         }
 
         .intro-btn {
-            margin-top: 50px;
+            position: absolute;
             padding: 16px 50px;
             font-size: 1.1em;
             font-family: 'Noto Serif SC', serif;
@@ -459,14 +459,28 @@
             color: #e8e4df;
             border-radius: 30px;
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
             animation: fadeInUp 1.5s ease;
+            z-index: 10;
         }
 
         .intro-btn:hover {
             background: rgba(255,255,255,0.2);
             border-color: rgba(255,255,255,0.5);
             transform: scale(1.05);
+        }
+
+        /* 按钮跳动动画 */
+        @keyframes buttonJump {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(var(--jumpX1), var(--jumpY1)); }
+            50% { transform: translate(var(--jumpX2), var(--jumpY2)); }
+            75% { transform: translate(var(--jumpX3), var(--jumpY3)); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .btn-jump {
+            animation: buttonJump 4s ease-in-out infinite;
         }
 
         /* 萤火虫光点 */
@@ -613,37 +627,37 @@
     <!-- 互动页面1 -->
     <div class="page page-intro active" id="page1">
         <p class="intro-text">送你一份礼物</p>
-        <button class="intro-btn" onclick="goToPage(2)">点击</button>
+        <button class="intro-btn btn-jump" id="btn1" onclick="goToPage(2)">点击</button>
     </div>
 
     <!-- 互动页面2 -->
     <div class="page page-intro" id="page2">
         <p class="intro-text">点击一下</p>
-        <button class="intro-btn" onclick="goToPage(3)">点击</button>
+        <button class="intro-btn btn-jump" id="btn2" onclick="goToPage(3)">点击</button>
     </div>
 
     <!-- 互动页面3 -->
     <div class="page page-intro" id="page3">
         <p class="intro-text">再点一下</p>
-        <button class="intro-btn" onclick="goToPage(4)">点击</button>
+        <button class="intro-btn btn-jump" id="btn3" onclick="goToPage(4)">点击</button>
     </div>
 
     <!-- 互动页面4 -->
     <div class="page page-intro" id="page4">
         <p class="intro-text">还没到底</p>
-        <button class="intro-btn" onclick="goToPage(5)">点击</button>
+        <button class="intro-btn btn-jump" id="btn4" onclick="goToPage(5)">点击</button>
     </div>
 
     <!-- 互动页面5 -->
     <div class="page page-intro" id="page5">
         <p class="intro-text">你猜我要干嘛？</p>
-        <button class="intro-btn" onclick="goToPage(6)">点击</button>
+        <button class="intro-btn btn-jump" id="btn5" onclick="goToPage(6)">点击</button>
     </div>
 
     <!-- 互动页面6 -->
     <div class="page page-intro" id="page6">
         <p class="intro-text">不逗你了，下一个就是</p>
-        <button class="intro-btn" onclick="goToPage(7)">点击</button>
+        <button class="intro-btn btn-jump" id="btn6" onclick="goToPage(7)">点击</button>
     </div>
 
     <!-- 萤火虫页面1 -->
@@ -778,6 +792,40 @@
     <script>
         let currentPage = 1;
         let scrollTimeout = null;
+
+        // 初始化按钮随机位置和跳动
+        function initButtonJump(btnId) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            
+            // 随机初始位置
+            const maxX = window.innerWidth - 200;
+            const maxY = window.innerHeight - 200;
+            const initX = Math.random() * maxX * 0.6 + maxX * 0.2;
+            const initY = Math.random() * maxY * 0.5 + maxY * 0.3;
+            btn.style.left = initX + 'px';
+            btn.style.top = initY + 'px';
+            
+            // 设置随机跳动参数
+            const jumpRange = 80;
+            btn.style.setProperty('--jumpX1', (Math.random() - 0.5) * jumpRange + 'px');
+            btn.style.setProperty('--jumpY1', (Math.random() - 0.5) * jumpRange + 'px');
+            btn.style.setProperty('--jumpX2', (Math.random() - 0.5) * jumpRange + 'px');
+            btn.style.setProperty('--jumpY2', (Math.random() - 0.5) * jumpRange + 'px');
+            btn.style.setProperty('--jumpX3', (Math.random() - 0.5) * jumpRange + 'px');
+            btn.style.setProperty('--jumpY3', (Math.random() - 0.5) * jumpRange + 'px');
+        }
+
+        // 初始化所有按钮
+        function initAllButtons() {
+            for (let i = 1; i <= 6; i++) {
+                initButtonJump('btn' + i);
+            }
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', initAllButtons);
+        window.addEventListener('resize', initAllButtons);
 
         function goToPage(pageNum) {
             // 清除自动滚动的定时器
