@@ -151,8 +151,39 @@
 
     .final-words { font-size: 16px; line-height: 2.2; color: #ffc8b4; padding: 15px 0; }
 
-    .btn-container { margin-top: 30px; opacity: 0; transition: opacity 0.5s; }
+    .btn-container { margin-top: 30px; opacity: 0; transition: opacity 0.5s; display: flex; gap: 15px; justify-content: center; align-items: center; }
     .btn-container.show { opacity: 1; }
+
+    .music-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255,200,180,0.1);
+      border: 1px solid rgba(255,200,180,0.4);
+      color: #ffc8b4;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 200;
+    }
+
+    .music-btn:hover {
+      background: rgba(255,200,180,0.2);
+      transform: scale(1.1);
+    }
+
+    .music-btn.playing {
+      animation: pulse-music 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse-music {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
 
     .final-blessing {
       position: fixed;
@@ -266,6 +297,7 @@
 
       <div class="section" data-section="5">
         <div class="btn-container" id="btnContainer">
+          <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="播放音乐">♫</button>
           <button class="btn" id="nextBtn" onclick="nextAction()">NEXT</button>
         </div>
       </div>
@@ -273,6 +305,11 @@
   </div>
 
   <div class="text-result" id="textResult">你值得所有美好</div>
+
+  <!-- 音乐播放器 -->
+  <audio id="bgMusic" loop>
+    <source src="https://music.163.com/song/media/outer/url?id=391855.mp3" type="audio/mpeg">
+  </audio>
 
   <div class="final-blessing" id="finalBlessing">
     <div class="final-blessing-text">
@@ -610,6 +647,33 @@
       requestAnimationFrame(animate);
     }
 
+    // ========== 音乐控制 ==========
+    var isMusicPlaying = false;
+    var bgMusic = null;
+
+    function toggleMusic() {
+      if (!bgMusic) {
+        bgMusic = document.getElementById('bgMusic');
+      }
+      
+      var musicBtn = document.getElementById('musicBtn');
+      
+      if (isMusicPlaying) {
+        bgMusic.pause();
+        musicBtn.classList.remove('playing');
+        musicBtn.textContent = '♫';
+        isMusicPlaying = false;
+      } else {
+        bgMusic.play().then(function() {
+          musicBtn.classList.add('playing');
+          musicBtn.textContent = '❚❚';
+          isMusicPlaying = true;
+        }).catch(function(e) {
+          console.log('播放失败，请点击重试');
+        });
+      }
+    }
+
     // ========== NEXT 动作 ==========
     function nextAction() {
       currentStep++;
@@ -619,10 +683,6 @@
         document.getElementById('nextBtn').textContent = 'NEXT';
       } else if (currentStep === 2) {
         launchSuperFireworks();
-        setTimeout(function() {
-          createTextFirework('你值得所有美好');
-          document.getElementById('textResult').classList.add('show');
-        }, 1500);
         document.getElementById('nextBtn').textContent = 'FINISH';
       } else if (currentStep >= 3) {
         // 连续烟花
