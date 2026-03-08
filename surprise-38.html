@@ -306,9 +306,9 @@
 
   <div class="text-result" id="textResult">你值得所有美好</div>
 
-  <!-- 音乐播放器 -->
-  <audio id="bgMusic" loop>
-    <source src="https://music.163.com/song/media/outer/url?id=391855.mp3" type="audio/mpeg">
+  <!-- 音乐播放器 - 使用多个备用源 -->
+  <audio id="bgMusic" loop preload="auto" crossorigin="anonymous">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
   </audio>
 
   <div class="final-blessing" id="finalBlessing">
@@ -328,8 +328,23 @@
     const heartCanvas = document.getElementById('heart-canvas');
     const heartCtx = heartCanvas.getContext('2d');
 
-    // 颜色
-    const colors = ['#ff6b9d', '#ff85a2', '#ffb3c6', '#ffd700', '#ff69b4', '#87ceeb', '#dda0dd', '#f0e68c', '#98fb98', '#ffa07a', '#ff6347', '#ffc8b4'];
+    // 真实烟花颜色 - 金色、红色、绿色、蓝色、紫色、白色为主
+    const colors = [
+      // 金色系
+      '#FFD700', '#FFA500', '#FFB347', '#FFCC00',
+      // 红色系
+      '#FF0000', '#FF4500', '#FF6B6B', '#DC143C',
+      // 绿色系
+      '#00FF00', '#32CD32', '#00FA9A', '#7FFF00',
+      // 蓝色系
+      '#00BFFF', '#1E90FF', '#4169E1', '#00CED1',
+      // 紫色系
+      '#9932CC', '#BA55D3', '#DA70D6', '#FF00FF',
+      // 银白色系
+      '#FFFFFF', '#F0F0F0', '#E8E8E8', '#D3D3D3',
+      // 橙色系
+      '#FF8C00', '#FF7F50', '#FF6347', '#FFA07A'
+    ];
 
     // 存储数组
     let fireworks = [];
@@ -493,33 +508,89 @@
       for (var i = 0; i < count; i++) {
         setTimeout(function() {
           launchFirework();
-        }, i * 200);
+        }, i * 150);
       }
     }
 
-    // 创建满屏烟花
+    // 创建满屏烟花 - 缓缓升空一大片
     function launchFullScreenFireworks() {
-      for (var i = 0; i < 15; i++) {
+      // 第一波：左边
+      for (var i = 0; i < 5; i++) {
         setTimeout(function() {
-          var sx = Math.random() * fwCanvas.width;
-          var sy = fwCanvas.height;
-          var tx = Math.random() * fwCanvas.width;
-          var ty = Math.random() * fwCanvas.height * 0.4 + 50;
-          fireworks.push(new Firework(sx, sy, tx, ty));
+          var sx = fwCanvas.width * 0.2 + Math.random() * fwCanvas.width * 0.1;
+          var tx = fwCanvas.width * 0.15 + Math.random() * fwCanvas.width * 0.2;
+          var ty = fwCanvas.height * 0.2 + Math.random() * fwCanvas.height * 0.25;
+          fireworks.push(new Firework(sx, fwCanvas.height, tx, ty));
         }, i * 100);
       }
+      
+      // 第二波：中间
+      for (var i = 0; i < 6; i++) {
+        setTimeout(function() {
+          var sx = fwCanvas.width * 0.45 + Math.random() * fwCanvas.width * 0.1;
+          var tx = fwCanvas.width * 0.35 + Math.random() * fwCanvas.width * 0.3;
+          var ty = fwCanvas.height * 0.15 + Math.random() * fwCanvas.height * 0.3;
+          fireworks.push(new Firework(sx, fwCanvas.height, tx, ty));
+        }, i * 120 + 300);
+      }
+      
+      // 第三波：右边
+      for (var i = 0; i < 5; i++) {
+        setTimeout(function() {
+          var sx = fwCanvas.width * 0.7 + Math.random() * fwCanvas.width * 0.1;
+          var tx = fwCanvas.width * 0.65 + Math.random() * fwCanvas.width * 0.2;
+          var ty = fwCanvas.height * 0.2 + Math.random() * fwCanvas.height * 0.25;
+          fireworks.push(new Firework(sx, fwCanvas.height, tx, ty));
+        }, i * 100 + 600);
+      }
     }
 
-    // 创建超级烟花
+    // 创建超级烟花 - 连续多波缓缓升起
     function launchSuperFireworks() {
-      for (var i = 0; i < 15; i++) {
-        setTimeout(function() {
-          var sx = Math.random() * fwCanvas.width;
-          var sy = fwCanvas.height;
-          var tx = Math.random() * fwCanvas.width;
-          var ty = Math.random() * fwCanvas.height * 0.5 + 30;
-          fireworks.push(new Firework(sx, sy, tx, ty));
-        }, i * 120);
+      var waves = 5;
+      var perWave = 8;
+      
+      for (var wave = 0; wave < waves; wave++) {
+        (function(w) {
+          setTimeout(function() {
+            for (var i = 0; i < perWave; i++) {
+              setTimeout(function() {
+                var sx = Math.random() * fwCanvas.width;
+                var tx = fwCanvas.width * 0.1 + Math.random() * fwCanvas.width * 0.8;
+                var ty = fwCanvas.height * 0.12 + Math.random() * fwCanvas.height * 0.38;
+                
+                var fw = new Firework(sx, fwCanvas.height, tx, ty);
+                fw.speed = 2 + Math.random() * 1.5;
+                fireworks.push(fw);
+              }, i * 80);
+            }
+          }, w * 400);
+        })(wave);
+      }
+    }
+
+    // 终极烟花 - 最盛大的效果
+    function launchUltimateFireworks() {
+      var totalWaves = 8;
+      
+      for (var wave = 0; wave < totalWaves; wave++) {
+        (function(w) {
+          setTimeout(function() {
+            var count = 10 + Math.floor(Math.random() * 5);
+            
+            for (var i = 0; i < count; i++) {
+              setTimeout(function() {
+                var sx = Math.random() * fwCanvas.width;
+                var tx = fwCanvas.width * 0.1 + Math.random() * fwCanvas.width * 0.8;
+                var ty = fwCanvas.height * 0.1 + Math.random() * fwCanvas.height * 0.4;
+                
+                var fw = new Firework(sx, fwCanvas.height, tx, ty);
+                fw.speed = 2.5 + Math.random() * 1.5;
+                fireworks.push(fw);
+              }, i * 60);
+            }
+          }, w * 300);
+        })(wave);
       }
     }
 
@@ -685,19 +756,15 @@
         launchSuperFireworks();
         document.getElementById('nextBtn').textContent = 'FINISH';
       } else if (currentStep >= 3) {
-        // 连续烟花
-        for (var round = 0; round < 3; round++) {
-          setTimeout(function() {
-            launchSuperFireworks();
-          }, round * 600);
-        }
+        // 终极烟花盛宴
+        launchUltimateFireworks();
         
         document.getElementById('btnContainer').style.display = 'none';
         document.getElementById('container').style.opacity = '0';
         
         setTimeout(function() {
           document.getElementById('finalBlessing').classList.add('show');
-          launchSuperFireworks();
+          launchUltimateFireworks();
         }, 1500);
       }
     }
