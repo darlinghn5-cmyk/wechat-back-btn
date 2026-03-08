@@ -434,11 +434,81 @@
             75% { transform: rotate(10deg); }
             100% { transform: rotate(0deg); }
         }
+
+        /* 互动页面样式 */
+        .page-intro {
+            background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%);
+        }
+
+        .intro-text {
+            font-family: 'Long Cang', cursive;
+            font-size: 2em;
+            color: #e8e4df;
+            letter-spacing: 0.15em;
+            animation: fadeInUp 1.2s ease;
+        }
+
+        .intro-btn {
+            margin-top: 50px;
+            padding: 16px 50px;
+            font-size: 1.1em;
+            font-family: 'Noto Serif SC', serif;
+            letter-spacing: 0.2em;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: #e8e4df;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .intro-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.5);
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
-    <!-- 首页 - 夜雨 -->
-    <div class="page page-rain active" id="page1">
+    <!-- 互动页面1 -->
+    <div class="page page-intro active" id="page1">
+        <p class="intro-text">送你一份礼物</p>
+        <button class="intro-btn" onclick="goToPage(2)">点击</button>
+    </div>
+
+    <!-- 互动页面2 -->
+    <div class="page page-intro" id="page2">
+        <p class="intro-text">点击一下</p>
+        <button class="intro-btn" onclick="goToPage(3)">点击</button>
+    </div>
+
+    <!-- 互动页面3 -->
+    <div class="page page-intro" id="page3">
+        <p class="intro-text">再点一下</p>
+        <button class="intro-btn" onclick="goToPage(4)">点击</button>
+    </div>
+
+    <!-- 互动页面4 -->
+    <div class="page page-intro" id="page4">
+        <p class="intro-text">还没到底</p>
+        <button class="intro-btn" onclick="goToPage(5)">点击</button>
+    </div>
+
+    <!-- 互动页面5 -->
+    <div class="page page-intro" id="page5">
+        <p class="intro-text">你猜我要干嘛？</p>
+        <button class="intro-btn" onclick="goToPage(6)">点击</button>
+    </div>
+
+    <!-- 互动页面6 -->
+    <div class="page page-intro" id="page6">
+        <p class="intro-text">不逗你了，下一个就是</p>
+        <button class="intro-btn" onclick="goToPage(7)">点击</button>
+    </div>
+
+    <!-- 第七页 - 夜雨（原第一页） -->
+    <div class="page page-rain" id="page7">
         <canvas class="rain-canvas" id="rainCanvas"></canvas>
         <div class="mist"></div>
         <div class="content-box">
@@ -453,12 +523,12 @@
                 有人提灯<br>
                 立在回廊
             </p>
-            <button class="next-btn" onclick="goToPage(2)">且看 <span class="wave">👋</span></button>
+            <button class="next-btn" onclick="goToPage(8)">且看 <span class="wave">👋</span></button>
         </div>
     </div>
 
-    <!-- 第二页 - 破晓 -->
-    <div class="page page-dawn" id="page2">
+    <!-- 第八页 - 破晓（原第二页） -->
+    <div class="page page-dawn" id="page8">
         <div class="light-rays"></div>
         <div class="sun-glow"></div>
         <div class="content-box dawn-content">
@@ -469,12 +539,12 @@
                 星月知<br>
                 风露知
             </p>
-            <button class="next-btn" onclick="goToPage(3)">且看 <span class="wave">👋</span></button>
+            <button class="next-btn" onclick="goToPage(9)">且看 <span class="wave">👋</span></button>
         </div>
     </div>
 
-    <!-- 第三页 - 暖阳 -->
-    <div class="page page-warm" id="page3">
+    <!-- 第九页 - 暖阳（原第三页） -->
+    <div class="page page-warm" id="page9">
         <div class="floating-particles" id="particles"></div>
         <div class="content-box warm-content">
             <h1 class="title">欲与君言</h1>
@@ -500,12 +570,12 @@
                 <p>有灯有影</p>
                 <p><span class="highlight">长明</span></p>
             </div>
-            <button class="next-btn" onclick="goToPage(4)">且看 <span class="wave">👋</span></button>
+            <button class="next-btn" onclick="goToPage(10)">且看 <span class="wave">👋</span></button>
         </div>
     </div>
 
-    <!-- 第四页 - 星空烟花 -->
-    <div class="page page-final" id="page4">
+    <!-- 第十页 - 星空烟花（原第四页） -->
+    <div class="page page-final" id="page10">
         <div class="stars" id="stars"></div>
         <canvas class="firework-canvas" id="fireworkCanvas"></canvas>
         <div class="content-box final-content">
@@ -526,6 +596,12 @@
         <div class="dot" onclick="goToPage(2)"></div>
         <div class="dot" onclick="goToPage(3)"></div>
         <div class="dot" onclick="goToPage(4)"></div>
+        <div class="dot" onclick="goToPage(5)"></div>
+        <div class="dot" onclick="goToPage(6)"></div>
+        <div class="dot" onclick="goToPage(7)"></div>
+        <div class="dot" onclick="goToPage(8)"></div>
+        <div class="dot" onclick="goToPage(9)"></div>
+        <div class="dot" onclick="goToPage(10)"></div>
     </div>
 
     <!-- 背景音乐 - 浮光 -->
@@ -548,11 +624,11 @@
             document.querySelectorAll('.dot')[pageNum - 1].classList.add('active');
             currentPage = pageNum;
 
-            if (pageNum === 4) {
+            if (pageNum === 10) {
                 createStars();
                 startFireworks();
             }
-            if (pageNum === 3) {
+            if (pageNum === 9) {
                 createParticles();
             }
         }
