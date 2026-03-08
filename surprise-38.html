@@ -114,19 +114,20 @@
       line-height: 2;
     }
 
-    .intro-btn {
-      padding: 18px 60px;
+    /* 按钮样式 */
+    .btn {
+      padding: 16px 50px;
       background: transparent;
       border: 1px solid rgba(255,200,180,0.4);
       color: #ffc8b4;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       transition: all 0.5s;
       font-family: 'Noto Serif SC', serif;
       letter-spacing: 4px;
     }
 
-    .intro-btn:hover {
+    .btn:hover {
       background: rgba(255,200,180,0.1);
       border-color: rgba(255,200,180,0.6);
       transform: scale(1.05);
@@ -159,7 +160,7 @@
       opacity: 0;
       transform: translateY(20px);
       transition: all 0.8s ease;
-      margin-bottom: 40px;
+      margin-bottom: 35px;
     }
 
     .section.visible {
@@ -172,7 +173,7 @@
       font-size: 11px;
       letter-spacing: 5px;
       color: rgba(255,200,180,0.5);
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     /* 标题 */
@@ -180,7 +181,7 @@
       font-size: 26px;
       font-weight: 400;
       letter-spacing: 6px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       color: #ffc8b4;
     }
 
@@ -188,7 +189,7 @@
       font-size: 12px;
       color: rgba(255,255,255,0.4);
       letter-spacing: 2px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     /* 标签 */
@@ -212,13 +213,13 @@
       width: 40px;
       height: 1px;
       background: rgba(255,200,180,0.3);
-      margin: 30px auto;
+      margin: 25px auto;
     }
 
     /* 信件 */
     .letter {
       text-align: left;
-      padding: 25px;
+      padding: 20px;
       background: rgba(0,0,0,0.2);
       border-left: 2px solid rgba(255,200,180,0.3);
       border-radius: 0 10px 10px 0;
@@ -227,7 +228,7 @@
     .letter p {
       font-size: 14px;
       line-height: 2;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       color: rgba(255,255,255,0.85);
       text-indent: 2em;
     }
@@ -241,27 +242,57 @@
       font-size: 16px;
       line-height: 2.2;
       color: #ffc8b4;
-      padding: 20px 0;
+      padding: 15px 0;
     }
 
-    /* 互动提示 */
-    .hint {
+    /* 按钮容器 */
+    .btn-container {
+      margin-top: 30px;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .btn-container.show {
+      opacity: 1;
+    }
+
+    /* 最终祝福 */
+    .final-blessing {
       position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 12px;
-      color: rgba(255,255,255,0.3);
-      z-index: 20;
-      letter-spacing: 1px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 1s;
+      background: rgba(26, 26, 46, 0.8);
+    }
+
+    .final-blessing.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .final-blessing-text {
+      font-size: 28px;
+      color: #ffc8b4;
+      letter-spacing: 8px;
+      text-shadow: 0 0 40px rgba(255,200,180,0.5);
+      text-align: center;
+      line-height: 2;
     }
 
     /* 文字烟花结果 */
     .text-result {
       position: fixed;
-      top: 50%;
+      top: 15%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       font-size: 32px;
       color: #ffc8b4;
       z-index: 50;
@@ -273,15 +304,15 @@
     }
 
     .text-result.show {
-      animation: textReveal 3s ease-out forwards;
+      animation: textReveal 4s ease-out forwards;
     }
 
     @keyframes textReveal {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-      20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-      30% { transform: translate(-50%, -50%) scale(1); }
+      0% { opacity: 0; transform: translateX(-50%) scale(0.5); }
+      20% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+      30% { transform: translateX(-50%) scale(1); }
       80% { opacity: 1; }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translateX(-50%) scale(1); }
     }
 
     /* 响应式 */
@@ -298,6 +329,10 @@
       }
       .letter p {
         font-size: 13px;
+      }
+      .final-blessing-text {
+        font-size: 22px;
+        letter-spacing: 4px;
       }
     }
   </style>
@@ -317,7 +352,7 @@
       <p class="intro-text">
         "有些人，光是遇见，就已经很美好了"
       </p>
-      <button class="intro-btn" onclick="start()">轻触开启</button>
+      <button class="btn" onclick="start()">轻触开启</button>
     </div>
   </div>
 
@@ -359,19 +394,30 @@
           <p>愿你有盔甲，也有软肋</p>
           <p>愿你在被打击时</p>
           <p>记得自己的珍贵</p>
-          <p style="margin-top: 20px; font-size: 14px; color: rgba(255,200,180,0.6);">你一直被珍视着 ✨</p>
+          <p style="margin-top: 15px; font-size: 14px; color: rgba(255,200,180,0.6);">你一直被珍视着 ✨</p>
+        </div>
+      </div>
+
+      <!-- NEXT 按钮 -->
+      <div class="section" data-section="5">
+        <div class="btn-container" id="btnContainer">
+          <button class="btn" id="nextBtn" onclick="nextAction()">NEXT</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 互动提示 -->
-  <div class="hint" id="hint" style="display: none;">
-    点击屏幕放烟花 ✨
-  </div>
-
-  <!-- 文字烟花结果 -->
+  <!-- 文字烟花 -->
   <div class="text-result" id="textResult">你值得所有美好</div>
+
+  <!-- 最终祝福 -->
+  <div class="final-blessing" id="finalBlessing">
+    <div class="final-blessing-text">
+      <p>愿所有美好</p>
+      <p>都如期而至</p>
+      <p style="margin-top: 30px; font-size: 16px; color: rgba(255,200,180,0.7);">2025.3.8 💝</p>
+    </div>
+  </div>
 
   <script>
     // ========== 粒子系统 ==========
@@ -392,8 +438,8 @@
 
     // 状态
     let isStarted = false;
-    let clickCount = 0;
-    let showTextFirework = false;
+    let currentStep = 0;
+    const totalSteps = 3;
 
     // 调整画布大小
     function resizeCanvas() {
@@ -441,11 +487,9 @@
       }
 
       update() {
-        // 微小漂浮
         this.x = this.baseX + Math.sin(Date.now() * 0.001 + this.angle) * 5;
         this.y = this.baseY + Math.cos(Date.now() * 0.001 + this.angle) * 5;
         
-        // 心��效果
         const heartbeat = Math.sin(Date.now() * 0.003) * 0.2;
         this.currentSize = this.size * (1 + heartbeat);
         
@@ -476,9 +520,9 @@
         this.targetY = targetY;
         this.color = color;
         this.size = 2 + Math.random() * 2;
-        this.speed = 0.08 + Math.random() * 0.05;
-        this.life = 100;
-        this.maxLife = 100;
+        this.speed = 0.06 + Math.random() * 0.04;
+        this.life = 120;
+        this.maxLife = 120;
         this.trail = [];
       }
 
@@ -487,12 +531,11 @@
         if (this.trail.length > 8) this.trail.shift();
 
         this.x += (this.targetX - this.x) * this.speed;
-        this.y += (this.targetY - this.y) * this.speed - 0.5;
+        this.y += (this.targetY - this.y) * this.speed - 0.3;
         this.life--;
       }
 
       draw() {
-        // 绘制拖尾
         for (let i = 0; i < this.trail.length; i++) {
           const t = this.trail[i];
           ctx.beginPath();
@@ -502,7 +545,6 @@
           ctx.fill();
         }
         
-        // 绘制主体
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
@@ -597,34 +639,24 @@
     }
 
     // 创建烟花
-    function createFirework(x, y, text = null) {
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      
-      if (text) {
-        // 文字烟花
-        createTextFirework(x, y, text);
-      } else {
-        // 普通烟花
-        for (let i = 0; i < 60; i++) {
-          const angle = Math.random() * Math.PI * 2;
-          const distance = 50 + Math.random() * 100;
-          const targetX = x + Math.cos(angle) * distance;
-          const targetY = y + Math.sin(angle) * distance;
-          fireworks.push(new FireworkParticle(x, y, targetX, targetY, colors[Math.floor(Math.random() * colors.length)]));
-        }
-        
-        // 爆炸粒子
-        setTimeout(() => {
-          for (let i = 0; i < 80; i++) {
-            particles.push(new ExplosionParticle(x, y, colors[Math.floor(Math.random() * colors.length)]));
-          }
-        }, 300);
+    function createFirework(x, y) {
+      for (let i = 0; i < 60; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 50 + Math.random() * 100;
+        const targetX = x + Math.cos(angle) * distance;
+        const targetY = y + Math.sin(angle) * distance;
+        fireworks.push(new FireworkParticle(x, y, targetX, targetY, colors[Math.floor(Math.random() * colors.length)]));
       }
+      
+      setTimeout(() => {
+        for (let i = 0; i < 80; i++) {
+          particles.push(new ExplosionParticle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+        }
+      }, 400);
     }
 
     // 创建文字烟花
     function createTextFirework(x, y, text) {
-      // 创建临时canvas获取文字点阵
       const tempCanvas = document.createElement('canvas');
       const tempCtx = tempCanvas.getContext('2d');
       tempCanvas.width = 400;
@@ -651,7 +683,6 @@
         }
       }
       
-      // 为每个点创建粒子
       points.forEach((point, i) => {
         setTimeout(() => {
           fireworks.push(new FireworkParticle(
@@ -659,7 +690,7 @@
             point.x, point.y,
             colors[Math.floor(Math.random() * colors.length)]
           ));
-        }, i * 5);
+        }, i * 3);
       });
     }
 
@@ -668,27 +699,23 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (isStarted) {
-        // 更新心形粒子
         heartParticles.forEach(p => {
           p.update();
           p.draw();
         });
 
-        // 更新鼠标粒子
         mouseParticles = mouseParticles.filter(p => {
           p.update();
           p.draw();
           return p.isAlive();
         });
 
-        // 更新烟花粒子
         fireworks = fireworks.filter(p => {
           p.update();
           p.draw();
           return p.isAlive();
         });
 
-        // 更新爆炸粒子
         particles = particles.filter(p => {
           p.update();
           p.draw();
@@ -715,29 +742,46 @@
       }
     });
 
-    // 点击事件
-    document.addEventListener('click', (e) => {
-      if (!isStarted) return;
+    // NEXT 按钮动作
+    function nextAction() {
+      currentStep++;
       
-      // 避免点击按钮时触发
-      if (e.target.tagName === 'BUTTON') return;
-      
-      clickCount++;
-      
-      if (clickCount >= 3 && !showTextFirework) {
-        // 第三次点击显示文字烟花
-        showTextFirework = true;
-        createFirework(canvas.width / 2, canvas.height / 2, '你值得所有美好');
+      if (currentStep === 1) {
+        // 第一步：放烟花
+        createFirework(canvas.width / 2, canvas.height / 3);
+        setTimeout(() => createFirework(canvas.width / 3, canvas.height / 2.5), 300);
+        setTimeout(() => createFirework(canvas.width * 2 / 3, canvas.height / 2.5), 600);
+        document.getElementById('nextBtn').textContent = 'NEXT';
         
-        // 显示文字结果
+      } else if (currentStep === 2) {
+        // 第二步：文字烟花
+        createTextFirework(canvas.width / 2, canvas.height / 2.5, '你值得所有美好');
+        document.getElementById('textResult').classList.add('show');
+        document.getElementById('nextBtn').textContent = 'FINISH';
+        
+      } else if (currentStep >= 3) {
+        // 第三步：结束
+        // 多个烟花
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            createFirework(
+              canvas.width * (0.2 + Math.random() * 0.6),
+              canvas.height * (0.2 + Math.random() * 0.4)
+            );
+          }, i * 200);
+        }
+        
+        // 隐藏按钮和内容
+        document.getElementById('btnContainer').style.display = 'none';
+        document.getElementById('container').style.opacity = '0';
+        document.getElementById('container').style.transition = 'opacity 1s';
+        
+        // 显示最终祝福
         setTimeout(() => {
-          document.getElementById('textResult').classList.add('show');
-          document.getElementById('hint').style.display = 'none';
-        }, 1500);
-      } else if (!showTextFirework) {
-        createFirework(e.clientX, e.clientY);
+          document.getElementById('finalBlessing').classList.add('show');
+        }, 1000);
       }
-    });
+    }
 
     // 开始
     function start() {
@@ -747,11 +791,6 @@
       isStarted = true;
       initHeartParticles();
       
-      // 显示提示
-      setTimeout(() => {
-        document.getElementById('hint').style.display = 'block';
-      }, 3000);
-      
       // 逐个显示段落
       const sections = document.querySelectorAll('.section');
       sections.forEach((section, index) => {
@@ -759,6 +798,11 @@
           section.classList.add('visible');
         }, 500 + index * 600);
       });
+      
+      // 显示按钮
+      setTimeout(() => {
+        document.getElementById('btnContainer').classList.add('show');
+      }, 3500);
     }
 
     // 启动动画
