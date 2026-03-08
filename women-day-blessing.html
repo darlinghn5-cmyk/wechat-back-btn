@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>送给那个傻乎乎的女孩</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            overflow: hidden;
+            background: #0f0f1a;
+        }
+
+        .page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease;
+            z-index: 1;
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 首页 - 夜雨 */
+        .page-rain {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
+        }
+
+        .rain-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .mist {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, rgba(30, 40, 60, 0.4), transparent);
+            z-index: 1;
+        }
+
+        .content-box {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 50px;
+            max-width: 520px;
+        }
+
+        .title {
+            font-size: 1.8em;
+            font-weight: 400;
+            color: #e8e4df;
+            letter-spacing: 0.15em;
+            margin-bottom: 40px;
+            animation: fadeInUp 1.2s ease;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1em;
+            font-weight: 300;
+            color: #9ca3af;
+            margin-bottom: 50px;
+            line-height: 2.2;
+            letter-spacing: 0.08em;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .next-btn {
+            padding: 14px 50px;
+            font-size: 0.9em;
+            font-family: 'Noto Serif SC', serif;
+            letter-spacing: 0.2em;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: #d1d5db;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            animation: fadeInUp 1.8s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .next-btn:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+
+        /* 第二页 - 破晓 */
+        .page-dawn {
+            background: linear-gradient(180deg, #2d3436 0%, #636e72 30%, #fab1a0 70%, #ffeaa7 100%);
+        }
+
+        .sun-glow {
+            position: absolute;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,236,179,0.8) 0%, rgba(253,203,110,0.4) 40%, transparent 70%);
+            border-radius: 50%;
+            animation: sunRise 3s ease-out forwards;
+            z-index: 1;
+        }
+
+        @keyframes sunRise {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .light-rays {
+            position: absolute;
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(to top, rgba(255,236,179,0.3), transparent);
+            z-index: 0;
+            animation: fadeIn 2s ease 1s forwards;
+            opacity: 0;
+        }
+
+        .dawn-content .title {
+            color: #2d3436;
+            text-shadow: 0 2px 15px rgba(255,255,255,0.3);
+        }
+
+        .dawn-content .subtitle {
+            color: #4a5568;
+        }
+
+        .dawn-content .next-btn {
+            border-color: rgba(45,52,56,0.3);
+            color: #2d3436;
+        }
+
+        .dawn-content .next-btn:hover {
+            background: rgba(45,52,56,0.1);
+        }
+
+        /* 第三页 - 暖阳 */
+        .page-warm {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .floating-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .warm-content .title {
+            color: #5d4e37;
+        }
+
+        .warm-content .message {
+            font-size: 1em;
+            font-weight: 300;
+            line-height: 2.5;
+            margin-bottom: 40px;
+            color: #6b5b4e;
+            letter-spacing: 0.1em;
+        }
+
+        .warm-content .highlight {
+            color: #b5838d;
+            font-weight: 400;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: rgba(107,91,78,0.3);
+            margin: 30px auto;
+        }
+
+        /* 第四页 - 星空烟花 */
+        .page-final {
+            background: linear-gradient(180deg, #0c0c1e 0%, #1a1a2e 50%, #16213e 100%);
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .firework-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .final-content {
+            z-index: 10;
+        }
+
+        .final-content .title {
+            font-size: 1.5em;
+            background: linear-gradient(90deg, #ffd89b, #ff9a9e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .final-message {
+            font-size: 1.1em;
+            color: #d4a574;
+            letter-spacing: 0.15em;
+            margin-bottom: 30px;
+            line-height: 2;
+        }
+
+        .date {
+            font-size: 0.85em;
+            color: #8b7355;
+            letter-spacing: 0.3em;
+        }
+
+        .heart-icon {
+            display: inline-block;
+            font-size: 1.2em;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 页面指示器 */
+        .page-indicator {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .dot.active {
+            background: rgba(255,216,155,0.9);
+            box-shadow: 0 0 15px rgba(255,216,155,0.5);
+        }
+
+        /* 音乐控制 */
+        .music-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .music-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .music-btn.playing {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 首页 - 夜雨 -->
+    <div class="page page-rain active" id="page1">
+        <canvas class="rain-canvas" id="rainCanvas"></canvas>
+        <div class="mist"></div>
+        <div class="content-box">
+            <h1 class="title">送给那个傻乎乎的女孩</h1>
+            <p class="subtitle">
+                这一路走来<br>
+                我知道你撑得很辛苦<br>
+                每一个难熬的夜晚<br>
+                我都在
+            </p>
+            <button class="next-btn" onclick="goToPage(2)">继续</button>
+        </div>
+    </div>
+
+    <!-- 第二页 - 破晓 -->
+    <div class="page page-dawn" id="page2">
+        <div class="light-rays"></div>
+        <div class="sun-glow"></div>
+        <div class="content-box dawn-content">
+            <h1 class="title">黎明将至</h1>
+            <p class="subtitle">
+                再漫长的黑夜<br>
+                也终会迎来晨曦<br>
+                你所有的坚强与隐忍<br>
+                我都看在眼里，疼在心里
+            </p>
+            <button class="next-btn" onclick="goToPage(3)">继续</button>
+        </div>
+    </div>
+
+    <!-- 第三页 - 暖阳 -->
+    <div class="page page-warm" id="page3">
+        <div class="floating-particles" id="particles"></div>
+        <div class="content-box warm-content">
+            <h1 class="title">想对你说</h1>
+            <div class="divider"></div>
+            <div class="message">
+                <p>你比自己想象的更勇敢</p>
+                <p>比看起来更坚强</p>
+                <p>比我知道的更值得被爱</p>
+                <div class="divider"></div>
+                <p><span class="highlight">无论风雨</span></p>
+                <p><span class="highlight">我会一直陪着你</span></p>
+            </div>
+            <button class="next-btn" onclick="goToPage(4)">送给你的</button>
+        </div>
+    </div>
+
+    <!-- 第四页 - 星空烟花 -->
+    <div class="page page-final" id="page4">
+        <div class="stars" id="stars"></div>
+        <canvas class="firework-canvas" id="fireworkCanvas"></canvas>
+        <div class="content-box final-content">
+            <h1 class="title">愿你被这世界温柔以待</h1>
+            <p class="final-message">
+                愿你的眼里总有光芒<br>
+                愿你的笑容永远灿烂
+            </p>
+            <p class="date">3.8 妇女节快乐 <span class="heart-icon">♥</span></p>
+        </div>
+    </div>
+
+    <!-- 页面指示器 -->
+    <div class="page-indicator">
+        <div class="dot active" onclick="goToPage(1)"></div>
+        <div class="dot" onclick="goToPage(2)"></div>
+        <div class="dot" onclick="goToPage(3)"></div>
+        <div class="dot" onclick="goToPage(4)"></div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+
+        function goToPage(pageNum) {
+            document.getElementById('page' + currentPage).classList.remove('active');
+            document.getElementById('page' + pageNum).classList.add('active');
+            document.querySelectorAll('.dot')[currentPage - 1].classList.remove('active');
+            document.querySelectorAll('.dot')[pageNum - 1].classList.add('active');
+            currentPage = pageNum;
+
+            if (pageNum === 4) {
+                createStars();
+                startFireworks();
+            }
+            if (pageNum === 3) {
+                createParticles();
+            }
+        }
+
+        // ========== 下雨效果 ==========
+        const rainCanvas = document.getElementById('rainCanvas');
+        const rainCtx = rainCanvas.getContext('2d');
+
+        function resizeRainCanvas() {
+            rainCanvas.width = window.innerWidth;
+            rainCanvas.height = window.innerHeight;
+        }
+        resizeRainCanvas();
+        window.addEventListener('resize', resizeRainCanvas);
+
+        class RainDrop {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * rainCanvas.width;
+                this.y = Math.random() * -rainCanvas.height;
+                this.length = Math.random() * 25 + 15;
+                this.speed = Math.random() * 12 + 10;
+                this.opacity = Math.random() * 0.25 + 0.1;
+                this.width = Math.random() * 1.5 + 0.5;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += 1;
+                if (this.y > rainCanvas.height) this.reset();
+            }
+            draw() {
+                rainCtx.beginPath();
+                rainCtx.moveTo(this.x, this.y);
+                rainCtx.lineTo(this.x + 2, this.y + this.length);
+                rainCtx.strokeStyle = `rgba(180, 190, 210, ${this.opacity})`;
+                rainCtx.lineWidth = this.width;
+                rainCtx.lineCap = 'round';
+                rainCtx.stroke();
+            }
+        }
+
+        const rainDrops = [];
+        for (let i = 0; i < 150; i++) {
+            rainDrops.push(new RainDrop());
+        }
+
+        function animateRain() {
+            rainCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+            rainDrops.forEach(drop => {
+                drop.update();
+                drop.draw();
+            });
+            requestAnimationFrame(animateRain);
+        }
+        animateRain();
+
+        // ========== 漂浮粒子 ==========
+        function createParticles() {
+            const container = document.getElementById('particles');
+            container.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = '-10px';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+
+        // ========== 星空 ==========
+        function createStars() {
+            const container = document.getElementById('stars');
+            container.innerHTML = '';
+            for (let i = 0; i < 80; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 60 + '%';
+                star.style.width = (Math.random() * 2 + 1) + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // ========== 烟花效果 ==========
+        const fireworkCanvas = document.getElementById('fireworkCanvas');
+        const fwCtx = fireworkCanvas.getContext('2d');
+
+        function resizeFireworkCanvas() {
+            fireworkCanvas.width = window.innerWidth;
+            fireworkCanvas.height = window.innerHeight;
+        }
+        resizeFireworkCanvas();
+        window.addEventListener('resize', resizeFireworkCanvas);
+
+        // 治愈系金红色调色板
+        const colors = [
+            '#ffd89b', '#ffcf7d', '#ffb347',  // 金色系
+            '#ff9a9e', '#ff8a8f', '#ff758c',  // 珊瑚粉
+            '#ffc3a0', '#ffcfdf', '#ffd1a4',  // 暖橙
+            '#f8b500', '#e8a87c', '#d4a574',  // 暖金
+        ];
+
+        class Particle {
+            constructor(x, y, color, type) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.type = type;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = type === 'spark' ? Math.random() * 3 + 1 : Math.random() * 5 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.decay = type === 'spark' ? Math.random() * 0.02 + 0.015 : Math.random() * 0.01 + 0.008;
+                this.gravity = 0.04;
+                this.size = type === 'spark' ? Math.random() * 2 + 1 : Math.random() * 3 + 2;
+                this.trail = [];
+            }
+
+            update() {
+                if (this.type !== 'spark') {
+                    this.trail.push({ x: this.x, y: this.y, alpha: this.alpha });
+                    if (this.trail.length > 5) this.trail.shift();
+                }
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+
+            draw() {
+                // 尾迹
+                this.trail.forEach((t, i) => {
+                    fwCtx.save();
+                    fwCtx.globalAlpha = t.alpha * 0.3;
+                    fwCtx.beginPath();
+                    fwCtx.arc(t.x, t.y, this.size * 0.5, 0, Math.PI * 2);
+                    fwCtx.fillStyle = this.color;
+                    fwCtx.fill();
+                    fwCtx.restore();
+                });
+
+                fwCtx.save();
+                fwCtx.globalAlpha = this.alpha;
+                fwCtx.beginPath();
+                fwCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                fwCtx.fillStyle = this.color;
+                fwCtx.shadowBlur = 15;
+                fwCtx.shadowColor = this.color;
+                fwCtx.fill();
+                fwCtx.restore();
+            }
+        }
+
+        class Firework {
+            constructor() {
+                this.x = Math.random() * fireworkCanvas.width * 0.6 + fireworkCanvas.width * 0.2;
+                this.y = fireworkCanvas.height;
+                this.targetY = Math.random() * (fireworkCanvas.height * 0.4) + fireworkCanvas.height * 0.15;
+                this.speed = Math.random() * 2 + 5;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.exploded = false;
+                this.particles = [];
+                this.trail = [];
+                this.trailLength = 15;
+            }
+
+            update() {
+                if (!this.exploded) {
+                    this.y -= this.speed;
+                    this.trail.push({ x: this.x, y: this.y });
+                    if (this.trail.length > this.trailLength) this.trail.shift();
+
+                    if (this.y <= this.targetY) {
+                        this.explode();
+                    }
+                }
+
+                this.particles.forEach(p => p.update());
+                this.particles = this.particles.filter(p => p.alpha > 0);
+            }
+
+            explode() {
+                this.exploded = true;
+                const count = Math.random() * 40 + 60;
+                
+                // 主粒子
+                for (let i = 0; i < count; i++) {
+                    const colorIdx = colors.indexOf(this.color);
+                    const newColor = colors[(colorIdx + Math.floor(Math.random() * 3)) % colors.length];
+                    this.particles.push(new Particle(this.x, this.y, newColor, 'main'));
+                }
+                
+                // 火花
+                for (let i = 0; i < 20; i++) {
+                    this.particles.push(new Particle(this.x, this.y, '#ffffff', 'spark'));
+                }
+            }
+
+            draw() {
+                // 上升尾迹
+                this.trail.forEach((t, i) => {
+                    const progress = i / this.trail.length;
+                    fwCtx.save();
+                    fwCtx.globalAlpha = progress * 0.6;
+                    fwCtx.beginPath();
+                    fwCtx.arc(t.x, t.y, 2, 0, Math.PI * 2);
+                    fwCtx.fillStyle = this.color;
+                    fwCtx.fill();
+                    fwCtx.restore();
+                });
+
+                if (!this.exploded) {
+                    fwCtx.save();
+                    fwCtx.beginPath();
+                    fwCtx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                    fwCtx.fillStyle = this.color;
+                    fwCtx.shadowBlur = 20;
+                    fwCtx.shadowColor = this.color;
+                    fwCtx.fill();
+                    fwCtx.restore();
+                }
+
+                this.particles.forEach(p => p.draw());
+            }
+
+            isDone() {
+                return this.exploded && this.particles.length === 0;
+            }
+        }
+
+        let fireworks = [];
+        let fireworkInterval;
+        let animationId;
+
+        function startFireworks() {
+            fireworks = [];
+            if (animationId) cancelAnimationFrame(animationId);
+            if (fireworkInterval) clearInterval(fireworkInterval);
+
+            for (let i = 0; i < 2; i++) {
+                setTimeout(() => fireworks.push(new Firework()), i * 500);
+            }
+
+            fireworkInterval = setInterval(() => {
+                if (Math.random() > 0.4 && fireworks.length < 5) {
+                    fireworks.push(new Firework());
+                }
+            }, 800);
+
+            animateFireworks();
+        }
+
+        function animateFireworks() {
+            fwCtx.fillStyle = 'rgba(12, 12, 30, 0.15)';
+            fwCtx.fillRect(0, 0, fireworkCanvas.width, fireworkCanvas.height);
+
+            fireworks.forEach(fw => {
+                fw.update();
+                fw.draw();
+            });
+
+            fireworks = fireworks.filter(fw => !fw.isDone());
+            animationId = requestAnimationFrame(animateFireworks);
+        }
+    </script>
+</body>
+</html>
