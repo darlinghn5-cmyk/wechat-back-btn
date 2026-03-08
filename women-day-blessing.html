@@ -586,7 +586,7 @@
         .firefly-text {
             font-family: 'Long Cang', cursive;
             font-size: 1.6em;
-            color: #e8e4df;
+            color: #ffd700;
             letter-spacing: 0.12em;
             position: absolute;
             top: 15%;
@@ -594,7 +594,67 @@
             transform: translateX(-50%);
             text-align: center;
             z-index: 10;
-            animation: fadeInUp 1s ease;
+            animation: fadeInUp 1s ease, textGlow 1.5s ease-in-out infinite;
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.6),
+                0 0 30px rgba(255, 215, 0, 0.4),
+                0 0 40px rgba(255, 200, 0, 0.3);
+        }
+
+        @keyframes textGlow {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px rgba(255, 215, 0, 0.8),
+                    0 0 20px rgba(255, 215, 0, 0.6),
+                    0 0 30px rgba(255, 215, 0, 0.4),
+                    0 0 40px rgba(255, 200, 0, 0.3);
+            }
+            50% {
+                text-shadow: 
+                    0 0 15px rgba(255, 215, 0, 1),
+                    0 0 30px rgba(255, 215, 0, 0.8),
+                    0 0 45px rgba(255, 215, 0, 0.6),
+                    0 0 60px rgba(255, 200, 0, 0.5);
+            }
+        }
+
+        /* 进度条样式 */
+        .progress-container {
+            position: absolute;
+            top: 85%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            max-width: 300px;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .progress-label {
+            font-family: 'Long Cang', cursive;
+            font-size: 1.1em;
+            color: #ffd700;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
         }
 
         /* 光点炸开动画 */
@@ -743,16 +803,21 @@
         </div>
     </div>
 
-    <!-- 萤火虫页面2 -->
+    <!-- 萤火虫页面2（原第9页） -->
     <div class="page page-intro" id="page8">
-        <p class="firefly-text">哎呀，跑了<br><br>再抓7只就好</p>
-        <p class="firefly-text" id="catchCount" style="top: 80%; font-size: 1.2em;">已抓: 0/7</p>
+        <p class="firefly-text">刚才那只跑了<br><br>再抓一只</p>
         <div id="sparkles"></div>
     </div>
 
-    <!-- 萤火虫页面3 -->
+    <!-- 萤火虫页面3（原第8页，需抓7只） -->
     <div class="page page-intro" id="page9">
-        <p class="firefly-text">算了，不抓了<br><br>光自己跑来了</p>
+        <p class="firefly-text">再抓7只就好</p>
+        <div class="progress-container">
+            <div class="progress-label">愿望实现进度</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+        </div>
         <div id="finalSparkles"></div>
     </div>
 
@@ -936,10 +1001,10 @@
                 }
             }
             if (pageNum === 8) {
-                createSparkles();
+                createSparkles();  // 只需要抓1只
             }
             if (pageNum === 9) {
-                createFinalSparkles();
+                createFinalSparkles();  // 需要抓7只
             }
             
             // 第10-12页自动滚动到下一页
@@ -1380,14 +1445,66 @@
             goToPage(8);
         }
 
-        let catchedCount = 0;
-
+        // 第8页：只需要抓1只萤火虫
         function createSparkles() {
             const container = document.getElementById('sparkles');
             if (!container) return;
             container.innerHTML = '';
+            
+            // 创建1只萤火虫
+            const sparkle = document.createElement('div');
+            sparkle.className = 'firefly';
+            sparkle.style.width = '35px';
+            sparkle.style.height = '35px';
+            sparkle.onclick = function(e) { 
+                // 停止移动
+                if (sparkle.dataset.intervalId) {
+                    clearInterval(parseInt(sparkle.dataset.intervalId));
+                }
+                // 消失动画
+                sparkle.style.transition = 'all 0.3s ease';
+                sparkle.style.transform = 'scale(0)';
+                setTimeout(() => goToPage(9), 400);
+            };
+            
+            // 添加内部结构
+            sparkle.innerHTML = `
+                <div class="firefly-wing left"></div>
+                <div class="firefly-wing right"></div>
+                <div class="firefly-body" style="width:8px;height:12px;top:50%"></div>
+                <div class="firefly-head" style="width:5px;height:5px;top:7px"></div>
+                <div class="firefly-glow" style="width:6px;height:8px;bottom:5px"></div>
+            `;
+            
+            // 初始位置
+            let x = Math.random() * (window.innerWidth - 80) + 30;
+            let y = Math.random() * (window.innerHeight - 200) + 100;
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            
+            // 让萤火虫快速移动
+            const moveInterval = setInterval(() => {
+                x += (Math.random() - 0.5) * 100;
+                y += (Math.random() - 0.5) * 100;
+                x = Math.max(20, Math.min(window.innerWidth - 50, x));
+                y = Math.max(80, Math.min(window.innerHeight - 100, y));
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+            }, 400);
+            
+            sparkle.dataset.intervalId = moveInterval;
+            container.appendChild(sparkle);
+        }
+
+        // 第9页：需要抓7只萤火虫
+        let catchedCount = 0;
+
+        function createFinalSparkles() {
+            const container = document.getElementById('finalSparkles');
+            if (!container) return;
+            container.innerHTML = '';
             catchedCount = 0;
-            updateCatchCount();
+            updateProgressBar();
             
             // 创建7只小萤火虫
             for (let i = 0; i < 7; i++) {
@@ -1421,21 +1538,21 @@
                     x += (Math.random() - 0.5) * 100;
                     y += (Math.random() - 0.5) * 100;
                     x = Math.max(20, Math.min(window.innerWidth - 50, x));
-                    y = Math.max(80, Math.min(window.innerHeight - 120, y));
+                    y = Math.max(80, Math.min(window.innerHeight - 150, y));
                     sparkle.style.left = x + 'px';
                     sparkle.style.top = y + 'px';
                 }, 400);
                 
-                // 保存interval ID以便清理
                 sparkle.dataset.intervalId = moveInterval;
                 container.appendChild(sparkle);
             }
         }
 
-        function updateCatchCount() {
-            const countEl = document.getElementById('catchCount');
-            if (countEl) {
-                countEl.textContent = '已抓: ' + catchedCount + '/7';
+        function updateProgressBar() {
+            const bar = document.getElementById('progressBar');
+            if (bar) {
+                const percent = (catchedCount / 7) * 100;
+                bar.style.width = percent + '%';
             }
         }
 
@@ -1452,51 +1569,16 @@
             
             // 增加计数
             catchedCount++;
-            updateCatchCount();
+            updateProgressBar();
             
             // 抓满7只后跳转
             if (catchedCount >= 7) {
-                setTimeout(() => goToPage(9), 500);
+                setTimeout(() => goToPage(10), 600);
             }
         }
 
         function catchSparkle2(event) {
             // 保留此函数以防万一
-        }
-
-        function createFinalSparkles() {
-            const container = document.getElementById('finalSparkles');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            // 创建很多小萤火虫飞舞
-            for (let i = 0; i < 12; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'firefly';
-                sparkle.style.width = '25px';
-                sparkle.style.height = '25px';
-                sparkle.style.pointerEvents = 'none';
-                
-                sparkle.innerHTML = `
-                    <div class="firefly-wing left"></div>
-                    <div class="firefly-wing right"></div>
-                    <div class="firefly-body" style="width:6px;height:10px;top:50%"></div>
-                    <div class="firefly-head" style="width:4px;height:4px;top:6px"></div>
-                    <div class="firefly-glow" style="width:5px;height:6px;bottom:4px"></div>
-                `;
-                
-                const x = Math.random() * (window.innerWidth - 50);
-                const y = Math.random() * (window.innerHeight - 150) + 50;
-                sparkle.style.left = x + 'px';
-                sparkle.style.top = y + 'px';
-                
-                container.appendChild(sparkle);
-            }
-            
-            // 2.5秒后自动跳转到下一页
-            setTimeout(() => {
-                goToPage(10);
-            }, 2500);
         }
     </script>
 </body>
