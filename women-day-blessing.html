@@ -468,6 +468,81 @@
             border-color: rgba(255,255,255,0.5);
             transform: scale(1.05);
         }
+
+        /* 萤火虫光点 */
+        .firefly {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #fff 0%, #ffd700 40%, transparent 70%);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20;
+            box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.6);
+            animation: fireflyGlow 1.5s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .firefly:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes fireflyGlow {
+            0%, 100% { opacity: 0.7; box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.4); }
+            50% { opacity: 1; box-shadow: 0 0 25px 10px rgba(255, 215, 0, 0.8); }
+        }
+
+        .firefly-text {
+            font-family: 'Long Cang', cursive;
+            font-size: 1.6em;
+            color: #e8e4df;
+            letter-spacing: 0.12em;
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+            animation: fadeInUp 1s ease;
+        }
+
+        /* 光点炸开动画 */
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #fff 0%, #ffd700 50%, transparent 100%);
+            border-radius: 50%;
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 20;
+            animation: sparkleFloat 3s ease-out forwards;
+        }
+
+        @keyframes sparkleFloat {
+            0% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* 渐亮效果 */
+        .fade-in-light {
+            animation: fadeInLight 2s ease-in forwards;
+        }
+
+        @keyframes fadeInLight {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* 页面变亮 */
+        .page-brighten {
+            animation: brighten 3s ease-in forwards;
+        }
+
+        @keyframes brighten {
+            0% { background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%); }
+            100% { background: linear-gradient(180deg, #1a1a2e 0%, #2d3436 50%, #1a1a2e 100%); }
+        }
     </style>
 </head>
 <body>
@@ -507,8 +582,26 @@
         <button class="intro-btn" onclick="goToPage(7)">点击</button>
     </div>
 
-    <!-- 第七页 - 夜雨（原第一页） -->
-    <div class="page page-rain" id="page7">
+    <!-- 萤火虫页面1 -->
+    <div class="page page-intro" id="page7">
+        <p class="firefly-text">抓到它，才能看礼物</p>
+        <div class="firefly" id="firefly1" onclick="catchFirefly1(event)"></div>
+    </div>
+
+    <!-- 萤火虫页面2 -->
+    <div class="page page-intro" id="page8">
+        <p class="firefly-text">哎呀，跑了<br><br>再抓一次</p>
+        <div id="sparkles"></div>
+    </div>
+
+    <!-- 萤火虫页面3 -->
+    <div class="page page-intro" id="page9">
+        <p class="firefly-text">算了，不抓了<br><br>光自己跑来了</p>
+        <div id="finalSparkles"></div>
+    </div>
+
+    <!-- 第十页 - 夜雨（原第一页） -->
+    <div class="page page-rain" id="page10">
         <canvas class="rain-canvas" id="rainCanvas"></canvas>
         <div class="mist"></div>
         <div class="content-box">
@@ -523,12 +616,12 @@
                 有人提灯<br>
                 立在回廊
             </p>
-            <button class="next-btn" onclick="goToPage(8)">且看 <span class="wave">👋</span></button>
+            <button class="next-btn" onclick="goToPage(11)">且看 <span class="wave">👋</span></button>
         </div>
     </div>
 
-    <!-- 第八页 - 破晓（原第二页） -->
-    <div class="page page-dawn" id="page8">
+    <!-- 第十一页 - 破晓（原第二页） -->
+    <div class="page page-dawn" id="page11">
         <div class="light-rays"></div>
         <div class="sun-glow"></div>
         <div class="content-box dawn-content">
@@ -539,12 +632,12 @@
                 星月知<br>
                 风露知
             </p>
-            <button class="next-btn" onclick="goToPage(9)">且看 <span class="wave">👋</span></button>
+            <button class="next-btn" onclick="goToPage(12)">且看 <span class="wave">👋</span></button>
         </div>
     </div>
 
-    <!-- 第九页 - 暖阳（原第三页） -->
-    <div class="page page-warm" id="page9">
+    <!-- 第十二页 - 暖阳（原第三页） -->
+    <div class="page page-warm" id="page12">
         <div class="floating-particles" id="particles"></div>
         <div class="content-box warm-content">
             <h1 class="title">欲与君言</h1>
@@ -570,12 +663,12 @@
                 <p>有灯有影</p>
                 <p><span class="highlight">长明</span></p>
             </div>
-            <button class="next-btn" onclick="goToPage(10)">且看 <span class="wave">👋</span></button>
+            <button class="next-btn" onclick="goToPage(13)">且看 <span class="wave">👋</span></button>
         </div>
     </div>
 
-    <!-- 第十页 - 星空烟花（原第四页） -->
-    <div class="page page-final" id="page10">
+    <!-- 第十三页 - 星空烟花（原第四页） -->
+    <div class="page page-final" id="page13">
         <div class="stars" id="stars"></div>
         <canvas class="firework-canvas" id="fireworkCanvas"></canvas>
         <div class="content-box final-content">
@@ -602,6 +695,9 @@
         <div class="dot" onclick="goToPage(8)"></div>
         <div class="dot" onclick="goToPage(9)"></div>
         <div class="dot" onclick="goToPage(10)"></div>
+        <div class="dot" onclick="goToPage(11)"></div>
+        <div class="dot" onclick="goToPage(12)"></div>
+        <div class="dot" onclick="goToPage(13)"></div>
     </div>
 
     <!-- 背景音乐 - 浮光 -->
@@ -624,12 +720,21 @@
             document.querySelectorAll('.dot')[pageNum - 1].classList.add('active');
             currentPage = pageNum;
 
-            if (pageNum === 10) {
+            if (pageNum === 13) {
                 createStars();
                 startFireworks();
             }
-            if (pageNum === 9) {
+            if (pageNum === 12) {
                 createParticles();
+            }
+            if (pageNum === 7) {
+                startFirefly();
+            }
+            if (pageNum === 8) {
+                createSparkles();
+            }
+            if (pageNum === 9) {
+                createFinalSparkles();
             }
         }
 
@@ -1041,6 +1146,98 @@
             }
             document.removeEventListener('click', initMusic);
         }, { once: true });
+
+        // ========== 萤火虫效果 ==========
+        let fireflyInterval = null;
+
+        function startFirefly() {
+            const firefly = document.getElementById('firefly1');
+            if (!firefly) return;
+            
+            // 随机移动
+            fireflyInterval = setInterval(() => {
+                const x = Math.random() * (window.innerWidth - 100) + 50;
+                const y = Math.random() * (window.innerHeight - 200) + 100;
+                firefly.style.left = x + 'px';
+                firefly.style.top = y + 'px';
+            }, 1500);
+            
+            // 初始位置
+            const x = Math.random() * (window.innerWidth - 100) + 50;
+            const y = Math.random() * (window.innerHeight - 200) + 100;
+            firefly.style.left = x + 'px';
+            firefly.style.top = y + 'px';
+        }
+
+        function catchFirefly1(event) {
+            if (fireflyInterval) clearInterval(fireflyInterval);
+            goToPage(8);
+        }
+
+        function createSparkles() {
+            const container = document.getElementById('sparkles');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            // 创建多个小光点
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.onclick = catchSparkle2;
+                
+                const angle = (Math.PI * 2 / 8) * i;
+                const distance = 80 + Math.random() * 50;
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                
+                sparkle.style.left = (centerX + Math.cos(angle) * distance) + 'px';
+                sparkle.style.top = (centerY + Math.sin(angle) * distance) + 'px';
+                
+                // 添加随机漂浮动画
+                sparkle.style.animation = `sparkleFloat 3s ease-out forwards`;
+                
+                // 让光点缓慢移动
+                setInterval(() => {
+                    const currentLeft = parseFloat(sparkle.style.left) || 0;
+                    const currentTop = parseFloat(sparkle.style.top) || 0;
+                    sparkle.style.left = (currentLeft + (Math.random() - 0.5) * 30) + 'px';
+                    sparkle.style.top = (currentTop + (Math.random() - 0.5) * 30) + 'px';
+                }, 800 + i * 100);
+                
+                container.appendChild(sparkle);
+            }
+        }
+
+        function catchSparkle2(event) {
+            goToPage(9);
+        }
+
+        function createFinalSparkles() {
+            const container = document.getElementById('finalSparkles');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            // 创建很多小光点
+            for (let i = 0; i < 15; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.pointerEvents = 'none';
+                
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+                sparkle.style.width = '8px';
+                sparkle.style.height = '8px';
+                
+                container.appendChild(sparkle);
+            }
+            
+            // 3秒后自动跳转到下一页
+            setTimeout(() => {
+                goToPage(10);
+            }, 3000);
+        }
     </script>
 </body>
 </html>
