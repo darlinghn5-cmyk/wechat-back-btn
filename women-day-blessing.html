@@ -703,38 +703,32 @@
 <body>
     <!-- 互动页面1 -->
     <div class="page page-intro active" id="page1">
-        <p class="intro-text">送你一份礼物</p>
-        <button class="intro-btn btn-jump" id="btn1" onclick="goToPage(2)">点击</button>
+        <button class="intro-btn btn-jump" id="btn1" onclick="goToPage(2)">送你一份礼物</button>
     </div>
 
     <!-- 互动页面2 -->
     <div class="page page-intro" id="page2">
-        <p class="intro-text">点击一下</p>
-        <button class="intro-btn btn-jump" id="btn2" onclick="goToPage(3)">点击</button>
+        <button class="intro-btn btn-jump" id="btn2" onclick="goToPage(3)">点击一下</button>
     </div>
 
     <!-- 互动页面3 -->
     <div class="page page-intro" id="page3">
-        <p class="intro-text">再点一下</p>
-        <button class="intro-btn btn-jump" id="btn3" onclick="goToPage(4)">点击</button>
+        <button class="intro-btn btn-jump" id="btn3" onclick="goToPage(4)">再点一下</button>
     </div>
 
     <!-- 互动页面4 -->
     <div class="page page-intro" id="page4">
-        <p class="intro-text">还没到底</p>
-        <button class="intro-btn btn-jump" id="btn4" onclick="goToPage(5)">点击</button>
+        <button class="intro-btn btn-jump" id="btn4" onclick="goToPage(5)">还没到底</button>
     </div>
 
     <!-- 互动页面5 -->
     <div class="page page-intro" id="page5">
-        <p class="intro-text">你猜我要干嘛？</p>
-        <button class="intro-btn btn-jump" id="btn5" onclick="goToPage(6)">点击</button>
+        <button class="intro-btn btn-jump" id="btn5" onclick="goToPage(6)">你猜我要干嘛？</button>
     </div>
 
     <!-- 互动页面6 -->
     <div class="page page-intro" id="page6">
-        <p class="intro-text">不逗你了，下一个就是</p>
-        <button class="intro-btn btn-jump" id="btn6" onclick="goToPage(7)">点击</button>
+        <button class="intro-btn btn-jump" id="btn6" onclick="goToPage(7)">不逗你了，下一个就是</button>
     </div>
 
     <!-- 萤火虫页面1 -->
@@ -751,7 +745,8 @@
 
     <!-- 萤火虫页面2 -->
     <div class="page page-intro" id="page8">
-        <p class="firefly-text">哎呀，跑了<br><br>再抓一次</p>
+        <p class="firefly-text">哎呀，跑了<br><br>再抓7只就好</p>
+        <p class="firefly-text" id="catchCount" style="top: 80%; font-size: 1.2em;">已抓: 0/7</p>
         <div id="sparkles"></div>
     </div>
 
@@ -1385,18 +1380,22 @@
             goToPage(8);
         }
 
+        let catchedCount = 0;
+
         function createSparkles() {
             const container = document.getElementById('sparkles');
             if (!container) return;
             container.innerHTML = '';
+            catchedCount = 0;
+            updateCatchCount();
             
-            // 创建多个小萤火虫
-            for (let i = 0; i < 6; i++) {
+            // 创建7只小萤火虫
+            for (let i = 0; i < 7; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'firefly';
                 sparkle.style.width = '30px';
                 sparkle.style.height = '30px';
-                sparkle.onclick = catchSparkle2;
+                sparkle.onclick = function(e) { catchOneSparkle(e, sparkle); };
                 
                 // 添加内部结构
                 sparkle.innerHTML = `
@@ -1407,8 +1406,8 @@
                     <div class="firefly-glow" style="width:6px;height:8px;bottom:5px"></div>
                 `;
                 
-                const angle = (Math.PI * 2 / 6) * i;
-                const distance = 60 + Math.random() * 40;
+                const angle = (Math.PI * 2 / 7) * i;
+                const distance = 80 + Math.random() * 60;
                 const centerX = window.innerWidth / 2;
                 const centerY = window.innerHeight / 2;
                 
@@ -1419,13 +1418,13 @@
                 
                 // 让萤火虫快速移动
                 const moveInterval = setInterval(() => {
-                    x += (Math.random() - 0.5) * 80;
-                    y += (Math.random() - 0.5) * 80;
+                    x += (Math.random() - 0.5) * 100;
+                    y += (Math.random() - 0.5) * 100;
                     x = Math.max(20, Math.min(window.innerWidth - 50, x));
-                    y = Math.max(80, Math.min(window.innerHeight - 100, y));
+                    y = Math.max(80, Math.min(window.innerHeight - 120, y));
                     sparkle.style.left = x + 'px';
                     sparkle.style.top = y + 'px';
-                }, 500);
+                }, 400);
                 
                 // 保存interval ID以便清理
                 sparkle.dataset.intervalId = moveInterval;
@@ -1433,15 +1432,36 @@
             }
         }
 
+        function updateCatchCount() {
+            const countEl = document.getElementById('catchCount');
+            if (countEl) {
+                countEl.textContent = '已抓: ' + catchedCount + '/7';
+            }
+        }
+
+        function catchOneSparkle(event, element) {
+            // 停止这只萤火虫的移动
+            if (element.dataset.intervalId) {
+                clearInterval(parseInt(element.dataset.intervalId));
+            }
+            
+            // 移除这只萤火虫
+            element.style.transition = 'all 0.3s ease';
+            element.style.transform = 'scale(0)';
+            setTimeout(() => element.remove(), 300);
+            
+            // 增加计数
+            catchedCount++;
+            updateCatchCount();
+            
+            // 抓满7只后跳转
+            if (catchedCount >= 7) {
+                setTimeout(() => goToPage(9), 500);
+            }
+        }
+
         function catchSparkle2(event) {
-            // 清理所有移动定时器
-            const sparkles = document.querySelectorAll('#sparkles .firefly');
-            sparkles.forEach(s => {
-                if (s.dataset.intervalId) {
-                    clearInterval(parseInt(s.dataset.intervalId));
-                }
-            });
-            goToPage(9);
+            // 保留此函数以防万一
         }
 
         function createFinalSparkles() {
