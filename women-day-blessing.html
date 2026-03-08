@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>送给那个傻乎乎的女孩</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Noto Serif SC', serif;
+            font-family: 'ZCOOL XiaoWei', serif;
             overflow: hidden;
             background: #0f0f1a;
         }
@@ -68,36 +68,43 @@
             z-index: 10;
             text-align: center;
             padding: 50px;
-            max-width: 520px;
+            max-width: 560px;
         }
 
+        /* 艺术字标题 */
         .title {
-            font-size: 1.8em;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.2em;
             font-weight: 400;
             color: #e8e4df;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             margin-bottom: 40px;
             animation: fadeInUp 1.2s ease;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            text-shadow: 0 0 30px rgba(255,255,255,0.15);
+        }
+
+        .title-inline {
+            display: inline;
         }
 
         .subtitle {
-            font-size: 1em;
-            font-weight: 300;
-            color: #9ca3af;
+            font-family: 'ZCOOL QingKe HuangYou', cursive;
+            font-size: 1.15em;
+            font-weight: 400;
+            color: #b8b5b0;
             margin-bottom: 50px;
-            line-height: 2.2;
-            letter-spacing: 0.08em;
+            line-height: 2.4;
+            letter-spacing: 0.2em;
             animation: fadeInUp 1.5s ease;
         }
 
         .next-btn {
-            padding: 14px 50px;
-            font-size: 0.9em;
-            font-family: 'Noto Serif SC', serif;
-            letter-spacing: 0.2em;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
+            padding: 14px 45px;
+            font-size: 1em;
+            font-family: 'ZCOOL XiaoWei', serif;
+            letter-spacing: 0.15em;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.08);
             color: #d1d5db;
             border-radius: 30px;
             cursor: pointer;
@@ -107,8 +114,8 @@
         }
 
         .next-btn:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.5);
             transform: translateY(-2px);
         }
 
@@ -156,11 +163,11 @@
 
         .dawn-content .title {
             color: #2d3436;
-            text-shadow: 0 2px 15px rgba(255,255,255,0.3);
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
         }
 
         .dawn-content .subtitle {
-            color: #4a5568;
+            color: #3d4852;
         }
 
         .dawn-content .next-btn {
@@ -169,7 +176,7 @@
         }
 
         .dawn-content .next-btn:hover {
-            background: rgba(45,52,56,0.1);
+            background: rgba(45,52,56,0.15);
         }
 
         /* 第三页 - 暖阳 */
@@ -205,24 +212,25 @@
         }
 
         .warm-content .message {
-            font-size: 1em;
-            font-weight: 300;
-            line-height: 2.5;
+            font-family: 'ZCOOL QingKe HuangYou', cursive;
+            font-size: 1.1em;
+            font-weight: 400;
+            line-height: 2.6;
             margin-bottom: 40px;
             color: #6b5b4e;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.15em;
         }
 
         .warm-content .highlight {
-            color: #b5838d;
+            color: #8b6b5a;
             font-weight: 400;
         }
 
         .divider {
-            width: 60px;
+            width: 50px;
             height: 1px;
-            background: rgba(107,91,78,0.3);
-            margin: 30px auto;
+            background: rgba(107,91,78,0.35);
+            margin: 25px auto;
         }
 
         /* 第四页 - 星空烟花 */
@@ -263,23 +271,21 @@
         }
 
         .final-content .title {
-            font-size: 1.5em;
-            background: linear-gradient(90deg, #ffd89b, #ff9a9e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.6em;
+            color: #e8d5b7;
         }
 
         .final-message {
-            font-size: 1.1em;
-            color: #d4a574;
-            letter-spacing: 0.15em;
+            font-family: 'ZCOOL QingKe HuangYou', cursive;
+            font-size: 1.15em;
+            color: #c9b896;
+            letter-spacing: 0.18em;
             margin-bottom: 30px;
-            line-height: 2;
+            line-height: 2.2;
         }
 
         .date {
-            font-size: 0.85em;
+            font-size: 0.9em;
             color: #8b7355;
             letter-spacing: 0.3em;
         }
@@ -336,38 +342,54 @@
             box-shadow: 0 0 15px rgba(255,216,155,0.5);
         }
 
-        /* 音乐控制 */
-        .music-btn {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 100;
-            display: flex;
+        /* 音乐按钮（标题内联） */
+        .music-btn-inline {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: rgba(255,255,255,0.6);
-            font-size: 1.1em;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .music-btn:hover {
+            width: 28px;
+            height: 28px;
+            margin-left: 8px;
+            border: 1px solid rgba(232,228,223,0.4);
             background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            cursor: pointer;
+            color: rgba(232,228,223,0.7);
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            vertical-align: middle;
         }
 
-        .music-btn.playing {
-            animation: pulse 2s ease-in-out infinite;
+        .music-btn-inline:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .music-btn-inline.playing {
+            animation: pulse 1.5s ease-in-out infinite;
+            border-color: rgba(255,216,155,0.6);
+            color: rgba(255,216,155,0.9);
         }
 
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 挥手动画 */
+        .wave {
+            display: inline-block;
+            animation: wave 0.8s ease-in-out infinite;
+            transform-origin: 70% 70%;
+        }
+
+        @keyframes wave {
+            0% { transform: rotate(0deg); }
+            15% { transform: rotate(14deg); }
+            30% { transform: rotate(-8deg); }
+            45% { transform: rotate(14deg); }
+            60% { transform: rotate(-4deg); }
+            75% { transform: rotate(10deg); }
+            100% { transform: rotate(0deg); }
         }
     </style>
 </head>
@@ -377,13 +399,16 @@
         <canvas class="rain-canvas" id="rainCanvas"></canvas>
         <div class="mist"></div>
         <div class="content-box">
-            <h1 class="title">送给那个傻乎乎的女孩</h1>
+            <h1 class="title">
+                <span class="title-inline">送给那个傻乎乎的女孩</span>
+                <button class="music-btn-inline" id="musicBtn" onclick="toggleMusic()">♪</button>
+            </h1>
             <p class="subtitle">
                 长夜未央<br>
                 有人提灯<br>
                 立在回廊
             </p>
-            <button class="next-btn" onclick="goToPage(2)">继续</button>
+            <button class="next-btn" onclick="goToPage(2)">看这里 <span class="wave">👋</span></button>
         </div>
     </div>
 
@@ -400,7 +425,7 @@
                 星月知<br>
                 风露知
             </p>
-            <button class="next-btn" onclick="goToPage(3)">继续</button>
+            <button class="next-btn" onclick="goToPage(3)">看这里 <span class="wave">👋</span></button>
         </div>
     </div>
 
@@ -426,7 +451,7 @@
                 <p>有影</p>
                 <p><span class="highlight">长明</span></p>
             </div>
-            <button class="next-btn" onclick="goToPage(4)">送给你的</button>
+            <button class="next-btn" onclick="goToPage(4)">看这里 <span class="wave">👋</span></button>
         </div>
     </div>
 
@@ -435,10 +460,13 @@
         <div class="stars" id="stars"></div>
         <canvas class="firework-canvas" id="fireworkCanvas"></canvas>
         <div class="content-box final-content">
-            <h1 class="title">愿你被这世界温柔以待</h1>
             <p class="final-message">
-                愿你的眼里总有光芒<br>
-                愿你的笑容永远灿烂
+                愿往后<br>
+                天地温柔<br><br>
+                愿你所见<br>
+                皆有光<br><br>
+                抬眼处<br>
+                总有清辉相照
             </p>
             <p class="date">3.8 妇女节快乐 <span class="heart-icon">♥</span></p>
         </div>
@@ -452,16 +480,10 @@
         <div class="dot" onclick="goToPage(4)"></div>
     </div>
 
-    <!-- 背景音乐 - 久石让 Summer -->
+    <!-- 背景音乐 -->
     <audio id="bgMusic" loop preload="auto">
-        <!-- 酷狗音乐外链 -->
-        <source src="https://webfs.tx.kugou.com/202503081130/8c7d9e0f1a2b3c4d5e6f7a8b9c0d1e2f/KG03/YPx_1ea9e88b226e4ea9b76db0c6b8b8e88b.mp3" type="audio/mpeg">
-        <!-- QQ音乐外链 -->
-        <source src="https://ws.stream6.qqmusic.qq.com/C400003OUlho2H7RQz.m4a?guid=0&uin=0&fromtag=66" type="audio/mp4">
-        <!-- 网易云备选 -->
-        <source src="https://music.163.com/song/media/outer/url?id=444269017.mp3" type="audio/mpeg">
+        <source src="https://music.163.com/song/media/outer/url?id=383913.mp3" type="audio/mpeg">
     </audio>
-    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">♪</button>
 
     <script>
         let currentPage = 1;
@@ -580,7 +602,6 @@
         resizeFireworkCanvas();
         window.addEventListener('resize', resizeFireworkCanvas);
 
-        // 金色、红色、紫色系调色板（锐化版）
         const colorPalettes = {
             gold: ['#FFD700', '#FFA500', '#FFB347', '#FFE135', '#FFCC00'],
             red: ['#FF0000', '#FF4500', '#DC143C', '#FF3333', '#FF1744'],
@@ -597,7 +618,6 @@
             return colors[Math.floor(Math.random() * colors.length)];
         }
 
-        // 高性能粒子（无模糊，锐利）
         class FastParticle {
             constructor(x, y, angle, speed, color) {
                 this.x = x;
@@ -628,7 +648,6 @@
             }
         }
 
-        // 光束粒子（锐利拖尾）
         class BeamParticle {
             constructor(x, y, angle, speed, color, length) {
                 this.x = x;
@@ -640,7 +659,6 @@
                 this.decay = Math.random() * 0.012 + 0.008;
                 this.gravity = 0.05;
                 this.length = length;
-                this.angle = angle;
             }
 
             update() {
@@ -667,7 +685,6 @@
             }
         }
 
-        // 余烬粒子
         class SparkParticle {
             constructor(x, y, color) {
                 this.x = x;
@@ -695,7 +712,6 @@
             }
         }
 
-        // 烟花类（高性能版）
         class Firework {
             constructor() {
                 this.x = Math.random() * fireworkCanvas.width * 0.7 + fireworkCanvas.width * 0.15;
@@ -735,14 +751,14 @@
                 const count = 100 + Math.floor(Math.random() * 50);
 
                 switch(this.type) {
-                    case 0: // 圆形放射
+                    case 0:
                         for (let i = 0; i < count; i++) {
                             const angle = (Math.PI * 2 / count) * i;
                             const speed = Math.random() * 5 + 4;
                             this.particles.push(new BeamParticle(this.x, this.y, angle, speed, getRandomColor(this.palette), 4));
                         }
                         break;
-                    case 1: // 空心
+                    case 1:
                         for (let i = 0; i < count; i++) {
                             const angle = (Math.PI * 2 / count) * i;
                             const speed = 5 + Math.random();
@@ -754,14 +770,14 @@
                             this.particles.push(new FastParticle(this.x, this.y, angle, speed, '#FFFFFF'));
                         }
                         break;
-                    case 2: // 菊花型
+                    case 2:
                         for (let i = 0; i < count * 1.5; i++) {
                             const angle = (Math.PI * 2 / count) * i;
                             const speed = 3 + Math.random() * 4;
                             this.particles.push(new BeamParticle(this.x, this.y, angle, speed, getRandomColor(this.palette), 6));
                         }
                         break;
-                    case 3: // 双层
+                    case 3:
                         for (let i = 0; i < count; i++) {
                             const angle = (Math.PI * 2 / count) * i;
                             const speed = 4 + Math.random() * 2;
@@ -775,7 +791,7 @@
                             }
                         }, 100);
                         break;
-                    case 4: // 星芒
+                    case 4:
                         const arms = 5 + Math.floor(Math.random() * 3);
                         for (let i = 0; i < count * 2; i++) {
                             const arm = i % arms;
@@ -786,14 +802,12 @@
                         break;
                 }
 
-                // 添加余烬
                 for (let i = 0; i < 40; i++) {
                     this.sparks.push(new SparkParticle(this.x, this.y, getRandomColor(this.palette)));
                 }
             }
 
             draw() {
-                // 上升尾迹（锐利）
                 if (!this.exploded) {
                     fwCtx.globalAlpha = 0.9;
                     fwCtx.strokeStyle = this.color;
@@ -810,7 +824,6 @@
                     fwCtx.fillRect(this.x - 2, this.y - 2, 4, 4);
                 }
 
-                // 粒子
                 this.particles.forEach(p => p.draw());
                 this.sparks.forEach(s => s.draw());
             }
@@ -829,12 +842,10 @@
             if (animationId) cancelAnimationFrame(animationId);
             if (fireworkInterval) clearInterval(fireworkInterval);
 
-            // 初始爆发
             for (let i = 0; i < 4; i++) {
                 setTimeout(() => fireworks.push(new Firework()), i * 200);
             }
 
-            // 持续发射
             fireworkInterval = setInterval(() => {
                 if (fireworks.length < 8) {
                     fireworks.push(new Firework());
@@ -877,7 +888,6 @@
             musicPlaying = !musicPlaying;
         }
 
-        // 页面加载后尝试播放
         document.addEventListener('click', function initMusic() {
             if (!musicPlaying) {
                 bgMusic.play().then(() => {
