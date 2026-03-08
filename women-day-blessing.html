@@ -1659,11 +1659,12 @@
         const musicBtn = document.getElementById('musicBtn');
 
         function toggleMusic() {
+            if (!bgMusic || !musicBtn) return;
             if (musicPlaying) {
                 bgMusic.pause();
                 musicBtn.classList.remove('playing');
             } else {
-                bgMusic.play().catch(e => console.log('音乐播放需要用户交互'));
+                bgMusic.play().catch(() => {});
                 musicBtn.classList.add('playing');
             }
             musicPlaying = !musicPlaying;
