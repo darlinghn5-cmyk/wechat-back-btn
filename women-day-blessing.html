@@ -483,27 +483,104 @@
             animation: buttonJump 4s ease-in-out infinite;
         }
 
-        /* 萤火虫光点 */
+        /* 萤火虫样式 */
         .firefly {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background: radial-gradient(circle, #fff 0%, #ffd700 40%, transparent 70%);
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
             z-index: 20;
-            box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.6);
-            animation: fireflyGlow 1.5s ease-in-out infinite;
-            transition: all 0.3s ease;
         }
 
-        .firefly:hover {
-            transform: scale(1.2);
+        /* 萤火虫身体 */
+        .firefly-body {
+            position: absolute;
+            width: 10px;
+            height: 16px;
+            background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+            border-radius: 50% 50% 40% 40%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
-        @keyframes fireflyGlow {
-            0%, 100% { opacity: 0.7; box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.4); }
-            50% { opacity: 1; box-shadow: 0 0 25px 10px rgba(255, 215, 0, 0.8); }
+        /* 萤火虫头部 */
+        .firefly-head {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 萤火虫发光尾巴 */
+        .firefly-glow {
+            position: absolute;
+            width: 8px;
+            height: 10px;
+            background: radial-gradient(ellipse, #ffffaa 0%, #ffd700 50%, #ffaa00 100%);
+            border-radius: 50%;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 
+                0 0 10px 5px rgba(255, 215, 0, 0.8),
+                0 0 20px 10px rgba(255, 200, 0, 0.5),
+                0 0 40px 20px rgba(255, 180, 0, 0.3);
+            animation: fireflyBreathe 0.5s ease-in-out infinite;
+        }
+
+        /* 萤火虫翅膀 */
+        .firefly-wing {
+            position: absolute;
+            width: 12px;
+            height: 8px;
+            background: rgba(100, 100, 100, 0.3);
+            border-radius: 50%;
+            top: 12px;
+            animation: wingFlap 0.1s ease-in-out infinite;
+        }
+
+        .firefly-wing.left {
+            left: 2px;
+            transform: rotate(-20deg);
+        }
+
+        .firefly-wing.right {
+            right: 2px;
+            transform: rotate(20deg);
+        }
+
+        @keyframes fireflyBreathe {
+            0%, 100% { 
+                opacity: 0.8;
+                box-shadow: 
+                    0 0 10px 5px rgba(255, 215, 0, 0.8),
+                    0 0 20px 10px rgba(255, 200, 0, 0.5),
+                    0 0 40px 20px rgba(255, 180, 0, 0.3);
+            }
+            50% { 
+                opacity: 1;
+                box-shadow: 
+                    0 0 15px 8px rgba(255, 215, 0, 1),
+                    0 0 30px 15px rgba(255, 200, 0, 0.7),
+                    0 0 50px 25px rgba(255, 180, 0, 0.4);
+            }
+        }
+
+        @keyframes wingFlap {
+            0%, 100% { transform: rotate(-20deg) scaleY(1); }
+            50% { transform: rotate(-20deg) scaleY(0.7); }
+        }
+
+        .firefly:hover .firefly-glow {
+            box-shadow: 
+                0 0 20px 10px rgba(255, 215, 0, 1),
+                0 0 40px 20px rgba(255, 200, 0, 0.8),
+                0 0 60px 30px rgba(255, 180, 0, 0.5);
         }
 
         .firefly-text {
@@ -663,7 +740,13 @@
     <!-- 萤火虫页面1 -->
     <div class="page page-intro" id="page7">
         <p class="firefly-text">抓到它，才能看礼物</p>
-        <div class="firefly" id="firefly1" onclick="catchFirefly1(event)"></div>
+        <div class="firefly" id="firefly1" onclick="catchFirefly1(event)">
+            <div class="firefly-wing left"></div>
+            <div class="firefly-wing right"></div>
+            <div class="firefly-body"></div>
+            <div class="firefly-head"></div>
+            <div class="firefly-glow"></div>
+        </div>
     </div>
 
     <!-- 萤火虫页面2 -->
@@ -1280,19 +1363,21 @@
             const firefly = document.getElementById('firefly1');
             if (!firefly) return;
             
-            // 随机移动
-            fireflyInterval = setInterval(() => {
-                const x = Math.random() * (window.innerWidth - 100) + 50;
-                const y = Math.random() * (window.innerHeight - 200) + 100;
-                firefly.style.left = x + 'px';
-                firefly.style.top = y + 'px';
-            }, 1500);
-            
             // 初始位置
             const x = Math.random() * (window.innerWidth - 100) + 50;
-            const y = Math.random() * (window.innerHeight - 200) + 100;
+            const y = Math.random() * (window.innerHeight - 250) + 100;
             firefly.style.left = x + 'px';
             firefly.style.top = y + 'px';
+            
+            // 更快移动（每400ms移动一次，适合手机）
+            fireflyInterval = setInterval(() => {
+                const maxX = window.innerWidth - 80;
+                const maxY = window.innerHeight - 200;
+                const newX = Math.random() * maxX + 20;
+                const newY = Math.random() * maxY + 80;
+                firefly.style.left = newX + 'px';
+                firefly.style.top = newY + 'px';
+            }, 600);
         }
 
         function catchFirefly1(event) {
@@ -1305,36 +1390,57 @@
             if (!container) return;
             container.innerHTML = '';
             
-            // 创建多个小光点
-            for (let i = 0; i < 8; i++) {
+            // 创建多个小萤火虫
+            for (let i = 0; i < 6; i++) {
                 const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
+                sparkle.className = 'firefly';
+                sparkle.style.width = '30px';
+                sparkle.style.height = '30px';
                 sparkle.onclick = catchSparkle2;
                 
-                const angle = (Math.PI * 2 / 8) * i;
-                const distance = 80 + Math.random() * 50;
+                // 添加内部结构
+                sparkle.innerHTML = `
+                    <div class="firefly-wing left"></div>
+                    <div class="firefly-wing right"></div>
+                    <div class="firefly-body" style="width:8px;height:12px;top:50%"></div>
+                    <div class="firefly-head" style="width:5px;height:5px;top:7px"></div>
+                    <div class="firefly-glow" style="width:6px;height:8px;bottom:5px"></div>
+                `;
+                
+                const angle = (Math.PI * 2 / 6) * i;
+                const distance = 60 + Math.random() * 40;
                 const centerX = window.innerWidth / 2;
                 const centerY = window.innerHeight / 2;
                 
-                sparkle.style.left = (centerX + Math.cos(angle) * distance) + 'px';
-                sparkle.style.top = (centerY + Math.sin(angle) * distance) + 'px';
+                let x = centerX + Math.cos(angle) * distance - 15;
+                let y = centerY + Math.sin(angle) * distance - 15;
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
                 
-                // 添加随机漂浮动画
-                sparkle.style.animation = `sparkleFloat 3s ease-out forwards`;
+                // 让萤火虫快速移动
+                const moveInterval = setInterval(() => {
+                    x += (Math.random() - 0.5) * 80;
+                    y += (Math.random() - 0.5) * 80;
+                    x = Math.max(20, Math.min(window.innerWidth - 50, x));
+                    y = Math.max(80, Math.min(window.innerHeight - 100, y));
+                    sparkle.style.left = x + 'px';
+                    sparkle.style.top = y + 'px';
+                }, 500);
                 
-                // 让光点缓慢移动
-                setInterval(() => {
-                    const currentLeft = parseFloat(sparkle.style.left) || 0;
-                    const currentTop = parseFloat(sparkle.style.top) || 0;
-                    sparkle.style.left = (currentLeft + (Math.random() - 0.5) * 30) + 'px';
-                    sparkle.style.top = (currentTop + (Math.random() - 0.5) * 30) + 'px';
-                }, 800 + i * 100);
-                
+                // 保存interval ID以便清理
+                sparkle.dataset.intervalId = moveInterval;
                 container.appendChild(sparkle);
             }
         }
 
         function catchSparkle2(event) {
+            // 清理所有移动定时器
+            const sparkles = document.querySelectorAll('#sparkles .firefly');
+            sparkles.forEach(s => {
+                if (s.dataset.intervalId) {
+                    clearInterval(parseInt(s.dataset.intervalId));
+                }
+            });
             goToPage(9);
         }
 
@@ -1343,26 +1449,34 @@
             if (!container) return;
             container.innerHTML = '';
             
-            // 创建很多小光点
-            for (let i = 0; i < 15; i++) {
+            // 创建很多小萤火虫飞舞
+            for (let i = 0; i < 12; i++) {
                 const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
+                sparkle.className = 'firefly';
+                sparkle.style.width = '25px';
+                sparkle.style.height = '25px';
                 sparkle.style.pointerEvents = 'none';
                 
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
+                sparkle.innerHTML = `
+                    <div class="firefly-wing left"></div>
+                    <div class="firefly-wing right"></div>
+                    <div class="firefly-body" style="width:6px;height:10px;top:50%"></div>
+                    <div class="firefly-head" style="width:4px;height:4px;top:6px"></div>
+                    <div class="firefly-glow" style="width:5px;height:6px;bottom:4px"></div>
+                `;
+                
+                const x = Math.random() * (window.innerWidth - 50);
+                const y = Math.random() * (window.innerHeight - 150) + 50;
                 sparkle.style.left = x + 'px';
                 sparkle.style.top = y + 'px';
-                sparkle.style.width = '8px';
-                sparkle.style.height = '8px';
                 
                 container.appendChild(sparkle);
             }
             
-            // 3秒后自动跳转到下一页
+            // 2.5秒后自动跳转到下一页
             setTimeout(() => {
                 goToPage(10);
-            }, 3000);
+            }, 2500);
         }
     </script>
 </body>
